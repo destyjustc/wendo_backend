@@ -4,6 +4,8 @@ from flask_migrate import Migrate, MigrateCommand
 
 from app import app, db
 
+from models import Result, User
+
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 
