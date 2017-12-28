@@ -12,29 +12,36 @@
 #
 # if __name__ == '__main__':
 #     app.run(debug=True)
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from database import db
+from flask import Flask, Blueprint
 import os
+from flask_jwt import JWT
+from views.users import user, User
 
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(os.environ['APP_SETTINGS'])
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SECRET_KEY'] = 'WHATEVER'
+    db.init_app(app)
+    app.register_blueprint(user, url_prefix='')
+    return app
 
-app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app = create_app()
 
-@app.route('/')
-def hello():
-    return "Hello World!"
+def verify(username, password):
+    if not (username and password):
+        return False
+    user = User.query.filter(User.username == username).\
+    filter(User.password == password).first()
+    if user is not None:
+        return user
 
+def identity(payload):
+    user_id = payload['identity']
+    return {"user_id": user_id}
 
-@app.route('/<name>')
-def hello_name(name):
-    return "Hello {}!".format(name)
-
-@app.route('/api/v1.0/signin', methods=['POST'])
-def sign_in():
-    return "singin"
-
+jwt = JWT(app, verify, identity)
 
 if __name__ == '__main__':
     app.run()
