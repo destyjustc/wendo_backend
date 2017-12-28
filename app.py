@@ -31,6 +31,10 @@ def hello():
 def hello_name(name):
     return "Hello {}!".format(name)
 
+@app.route('/api/v1.0/signin', methods=['POST'])
+def sign_in():
+    return "singin"
+
 
 if __name__ == '__main__':
     app.run()
