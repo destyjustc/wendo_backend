@@ -17,9 +17,11 @@ from flask import Flask, Blueprint
 import os
 from flask_jwt import JWT
 from views.users import user, User
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(os.environ['APP_SETTINGS'])
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'WHATEVER'
