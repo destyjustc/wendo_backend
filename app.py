@@ -17,6 +17,7 @@ from flask import Flask, Blueprint
 import os
 from flask_jwt import JWT
 from views.users import user, User
+from views.schools import school
 from flask_cors import CORS
 
 def create_app():
@@ -26,7 +27,8 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'WHATEVER'
     db.init_app(app)
-    app.register_blueprint(user, url_prefix='')
+    app.register_blueprint(user, url_prefix='/users')
+    app.register_blueprint(school, url_prefix='/schools')
     return app
 
 app = create_app()
