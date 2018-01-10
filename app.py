@@ -18,6 +18,7 @@ import os
 from flask_jwt import JWT
 from views.users import user, User
 from views.schools import school
+from views.students import student
 from flask_cors import CORS
 
 def create_app():
@@ -29,6 +30,7 @@ def create_app():
     db.init_app(app)
     app.register_blueprint(user, url_prefix='/users')
     app.register_blueprint(school, url_prefix='/schools')
+    app.register_blueprint(student, url_prefix='/students')
     return app
 
 app = create_app()

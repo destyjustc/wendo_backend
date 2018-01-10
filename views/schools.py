@@ -11,10 +11,6 @@ class School(db.Model):
     name = db.Column(db.String())
     describe = db.Column(db.String())
 
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-
     def __init__(self, dict):
         for key in dict:
             setattr(self, key, dict[key])

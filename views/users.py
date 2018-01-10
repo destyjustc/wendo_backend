@@ -11,8 +11,9 @@ class User(db.Model):
     username = db.Column(db.String())
     password = db.Column(db.String())
 
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, dict):
+        for key in dict:
+            setattr(self, key, dict[key])
 
     def __repr__(self):
         return '<id {}>'.format(self.id)

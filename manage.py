@@ -5,8 +5,6 @@ from flask_migrate import Migrate, MigrateCommand
 from database import db
 from app import app
 
-from views.users import user
-
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 
