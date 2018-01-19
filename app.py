@@ -17,7 +17,7 @@ from flask import Flask, Blueprint
 import os
 from flask_jwt import JWT
 from views.users import user, User
-from views.schools import school
+from views.schools import api as school_api
 from views.students import api as student_api
 from flask_cors import CORS
 from flask_restplus import Api
@@ -30,6 +30,7 @@ def init_api():
         doc='/doc/'
     )
     api.add_namespace(student_api, path="/student")
+    api.add_namespace(school_api, path="/school")
     return api
 
 def create_app():
@@ -40,8 +41,6 @@ def create_app():
     app.config['SECRET_KEY'] = 'WHATEVER'
     db.init_app(app)
     app.register_blueprint(user, url_prefix='/users')
-    app.register_blueprint(school, url_prefix='/schools')
-    # app.register_blueprint(student, url_prefix='/students')
     api = init_api()
     api.init_app(app)
 
