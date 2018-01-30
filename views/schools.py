@@ -58,5 +58,5 @@ class StudentResource(Resource):
         '''Fetch a school given its identifier'''
         school = School.query.filter(School.id == id).first()
         if school is not None:
-            return school.as_dict()
+            return jsonify(school.as_dict())
         api.abort(404)
