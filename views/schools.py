@@ -2,13 +2,14 @@ from database import db
 from flask import jsonify, request
 from flask_jwt import jwt_required
 from flask_restplus import Namespace, Resource, fields
+# from uuid import UUID
 
 api = Namespace('schools', description="Schools related operations")
 
 class School(db.Model):
     __tablename__ = 'schools'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), primary_key=True)
     name = db.Column(db.String())
     describe = db.Column(db.String())
 
@@ -23,7 +24,7 @@ class School(db.Model):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 school_api_model = api.model('School', {
-    'id': fields.Integer(required=True, description="The school identifier"),
+    'id': fields.String(required=True, description="The school identifier"),
     'name': fields.Integer(required=True, description="The school name"),
     'describe': fields.Integer(required=False, description="The school description"),
 })

@@ -16,9 +16,10 @@ from database import db
 from flask import Flask, Blueprint
 import os
 from flask_jwt import JWT
-from views.users import user, User
+from views.users import User
 from views.schools import api as school_api
 from views.students import api as student_api
+from views.users import api as user_api
 from flask_cors import CORS
 from flask_restplus import Api
 
@@ -31,6 +32,7 @@ def init_api():
     )
     api.add_namespace(student_api, path="/student")
     api.add_namespace(school_api, path="/school")
+    api.add_namespace(user_api, path="/user")
     return api
 
 def create_app():
@@ -40,7 +42,6 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'WHATEVER'
     db.init_app(app)
-    app.register_blueprint(user, url_prefix='/users')
     api = init_api()
     api.init_app(app)
 
