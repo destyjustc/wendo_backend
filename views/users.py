@@ -22,6 +22,54 @@ class User(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+class UserService(object):
+    @classmethod
+    def signin(cls, data):
+        user = User.query.filter(User.username == data['username']). \
+            filter(User.password == data['password']).first()
+        if user is not None:
+            return user.as_dict()
+        api.abort(401)
+
+    @classmethod
+    def get(cls, id):
+        user = User.query.filter(User.id == id).first()
+        if user is not None:
+            return user.as_dict()
+        api.abort(404)
+
+    @classmethod
+    def get_list(cls):
+        users = User.query.all()
+        user_list = [user.as_dict() for user in users]
+        return user_list
+
+    @classmethod
+    def create(cls, data):
+        user = User(data)
+        db.session.add(user)
+        db.session.commit()
+        return user.as_dict()
+
+    @classmethod
+    def delete(cls, id):
+        user = User.query.filter(User.id == id).first()
+        if user is not None:
+            db.session.delete(user)
+            db.session.commit()
+            return user.as_dict()
+        api.abort(404)
+
+    @classmethod
+    def update(cls, id, data):
+        user = User.query.filter(User.id == id).first()
+        try:
+            user.update(data)
+            db.session.commit()
+            return user.as_dict()
+        except Exception:
+            api.abort(400)
+
 user_signin_api_model = api.model('User', {
     'username': fields.String(required=True, description="The username"),
     'password': fields.String(required=True, description="The password"),
@@ -40,11 +88,7 @@ class UserSigninResource(Resource):
     def post(self):
         '''User Sign in'''
         args = request.get_json()
-        user = User.query.filter(User.username == args['username']). \
-            filter(User.password == args['password']).first()
-        if user is not None:
-            return jsonify(user.as_dict())
-        return jsonify(args)
+        return UserService.signin(args)
 
 @api.route('/')
 class UserListResource(Resource):
@@ -52,19 +96,14 @@ class UserListResource(Resource):
     @api.marshal_list_with(user_api_model)
     def get(self):
         '''List all users'''
-        users = User.query.all()
-        user_list = [user.as_dict() for user in users]
-        return jsonify(user_list)
+        return UserService.get_list()
 
     @api.doc('create_new_user')
     @api.marshal_with(user_api_model)
     def post(self):
         '''Create an user'''
         args = request.get_json()
-        user = User(args)
-        db.session.add(user)
-        db.session.commit()
-        return jsonify(user.as_dict())
+        return UserService.create(args)
 
 @api.route('/<id>')
 @api.param('id', 'The user id')
@@ -73,35 +112,20 @@ class UserResource(Resource):
     @api.marshal_with(user_api_model)
     def get(self, id):
         '''Fetch an user given its identifier'''
-        user = User.query.filter(User.id == id).first()
-        if user is not None:
-            return jsonify(user.as_dict())
-        api.abort(404)
+        return UserService.get(id)
 
     @api.doc('delete_user')
     @api.marshal_with(user_api_model)
     def delete(self, id):
         '''Remove an user given its identifier'''
-        user = User.query.filter(User.id == id).first()
-        if user is not None:
-            db.session.delete(user)
-            db.session.commit()
-            return jsonify(user.as_dict())
-        api.abort(404)
+        return UserService.delete(id)
 
     @api.doc('update_user')
     @api.marshal_with(user_api_model)
     def put(self, id):
         '''Update an user given its identifier'''
-        user = User.query.filter(User.id == id).first()
         args = request.get_json()
-        args.pop('id', None)
-        try:
-            user.update(args)
-            db.session.commit()
-            return jsonify(user.as_dict())
-        except Exception:
-            api.abort(400)
+        return UserService.update(id, args)
 
 
 

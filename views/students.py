@@ -33,12 +33,26 @@ student_api_model = api.model('Student', {
     'user_id': fields.Integer(required=True, description="The id of the user associated")
 })
 
-@api.route('/')
-class StudentListResource(Resource):
-    @api.doc('list_students')
-    @api.marshal_list_with(student_api_model)
-    def get(self):
-        '''List all students'''
+class StudentService(object):
+    @classmethod
+    def get(cls, id):
+        student = Student.query.filter_by(id=id).first()
+        if student is not None:
+            return student.as_dict()
+        api.abort(404)
+
+    @classmethod
+    def create(cls, data):
+        user = User(data)
+        db.session.add(user)
+        db.session.commit()
+        student = Student({"user_id": user.id})
+        db.session.add(student)
+        db.session.commit()
+        return student, 201
+
+    @classmethod
+    def get_list(cls):
         students = Student.query.all()
         for s in students:
             print(s.user)
@@ -46,20 +60,23 @@ class StudentListResource(Resource):
         user_list = [student.user.as_dict() for student in students]
         for s, u in zip(student_list, user_list):
             s['user'] = u
-        return jsonify(student_list)
+        return student_list
+
+
+@api.route('/')
+class StudentListResource(Resource):
+    @api.doc('list_students')
+    @api.marshal_list_with(student_api_model)
+    def get(self):
+        '''List all students'''
+        return StudentService.get_list()
 
     @api.doc('create_new_student')
     @api.marshal_with(student_api_model)
     def post(self):
         '''Create a student'''
         args = request.get_json()
-        user = User(args)
-        db.session.add(user)
-        db.session.commit()
-        student = Student({"user_id":user.id})
-        db.session.add(student)
-        db.session.commit()
-        return jsonify(user.as_dict())
+        return StudentService.create(args)
 
 @api.route('/<id>')
 @api.param('id', 'The student id')
@@ -68,11 +85,7 @@ class StudentResource(Resource):
     @api.marshal_with(student_api_model)
     def get(self, id):
         '''Fetch a student given its identifier'''
-        print(id)
-        student = Student.query.filter(Student.id == id).first()
-        if student is not None:
-            return student.as_dict()
-        api.abort(404)
+        return StudentService.get(id)
 
     # def put(self, id):
     #     args = request.get_json()

@@ -23,6 +23,27 @@ class School(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+class SchoolService(object):
+    @classmethod
+    def get(cls, id):
+        school = School.query.filter(id=id).first()
+        if school is not None:
+            return school.as_dict()
+        api.abort(404)
+
+    @classmethod
+    def get_list(cls):
+        schools = School.query.all()
+        school_list = [school.as_dict() for school in schools]
+        return school_list
+
+    @classmethod
+    def create(cls, data):
+        school = School(data)
+        db.session.add(school)
+        db.session.commit()
+        return school.as_dict()
+
 school_api_model = api.model('School', {
     'id': fields.String(required=True, description="The school identifier"),
     'name': fields.Integer(required=True, description="The school name"),
@@ -35,19 +56,14 @@ class SchoolListResource(Resource):
     @api.marshal_list_with(school_api_model)
     def get(self):
         '''List all schools'''
-        schools = School.query.all()
-        school_list = [school.as_dict() for school in schools]
-        return jsonify(school_list)
+        return SchoolService.get_list()
 
     @api.doc('create_new_school')
     @api.marshal_with(school_api_model)
     def post(self):
         '''Create a school'''
         args = request.get_json()
-        school = School(args)
-        db.session.add(school)
-        db.session.commit()
-        return jsonify(school.as_dict())
+        return SchoolService.create(args)
 
 @api.route('/<id>')
 @api.param('id', 'The school id')
@@ -56,7 +72,4 @@ class StudentResource(Resource):
     @api.marshal_with(school_api_model)
     def get(self, id):
         '''Fetch a school given its identifier'''
-        school = School.query.filter(School.id == id).first()
-        if school is not None:
-            return jsonify(school.as_dict())
-        api.abort(404)
+        return SchoolService.get(id)
