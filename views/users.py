@@ -8,7 +8,7 @@ api = Namespace('users', description="Users related operations")
 class User(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.String(32), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True)
     username = db.Column(db.String())
     password = db.Column(db.String())
 

@@ -9,7 +9,7 @@ api = Namespace('schools', description="Schools related operations")
 class School(db.Model):
     __tablename__ = 'schools'
 
-    id = db.Column(db.String(32), primary_key=True)
+    id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String())
     describe = db.Column(db.String())
 

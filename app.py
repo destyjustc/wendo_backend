@@ -1,8 +1,9 @@
 from database import db
-from flask import Flask, Blueprint
+from flask import Flask
 import os
 from flask_jwt import JWT
 from views.users import User
+from views.roles import Role
 from views.schools import api as school_api
 from views.students import api as student_api
 from views.users import api as user_api
