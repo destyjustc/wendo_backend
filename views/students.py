@@ -53,8 +53,6 @@ class StudentService(object):
     @classmethod
     def get_list(cls):
         students = Student.query.all()
-        for s in students:
-            print(s.user)
         student_list = [student.as_dict() for student in students]
         user_list = [student.user.as_dict() for student in students]
         for s, u in zip(student_list, user_list):
