@@ -6,6 +6,7 @@ from views.users import User
 from views.roles import Role
 from views.schools import api as school_api
 from views.students import api as student_api
+from views.teachers import api as teacher_api
 from views.users import api as user_api
 from flask_cors import CORS
 from flask_restplus import Api
@@ -20,6 +21,7 @@ def init_api():
     api.add_namespace(student_api, path="/student")
     api.add_namespace(school_api, path="/school")
     api.add_namespace(user_api, path="/user")
+    api.add_namespace(teacher_api, path="/teacher")
     return api
 
 def create_app():

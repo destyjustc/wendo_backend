@@ -3,7 +3,6 @@ from flask import jsonify, request
 from flask_jwt import jwt_required
 from views.users import User
 from flask_restplus import Namespace, Resource, fields
-from sqlalchemy.dialects.postgresql import UUID
 
 api = Namespace('students', description="Students related operations")
 
@@ -11,7 +10,7 @@ class Student(db.Model):
     __tablename__ = 'students'
 
     id = db.Column(db.String(36), primary_key=True)
-    user_id = db.Column(db.String(32), db.ForeignKey(User.id))
+    user_id = db.Column(db.String(36), db.ForeignKey(User.id))
     user = db.relationship(User, foreign_keys=user_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
