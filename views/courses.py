@@ -56,6 +56,25 @@ class CourseService(object):
         course_list = [course.as_dict() for course in courses]
         return course_list
 
+    @classmethod
+    def update(cls, id, data):
+        course = Course.query.filter(id=id).first()
+        try:
+            course.update(data)
+            db.session.commit()
+            return course.as_dict()
+        except Exception:
+            api.abort(400)
+
+    @classmethod
+    def delete(cls, id):
+        course = Course.query.filter(id=id).first()
+        if course:
+            db.session.delete(course)
+            db.session.commit()
+            return course.as_dict()
+        api.abort(404)
+
 @api.route('/')
 class CourseListResource(Resource):
     @api.doc('list_courses')
@@ -79,3 +98,16 @@ class CourseResource(Resource):
     def get(self, id):
         '''Fetch a course given its identifier'''
         return CourseService.get(id)
+
+    @api.doc('update_course')
+    @api.marshal_with(course_api_model)
+    def put(self, id):
+        '''Update a course given its identifier'''
+        args = request.get_json()
+        return CourseService.update(id, args)
+
+    @api.doc('delete_course')
+    @api.marshal_with(course_api_model)
+    def put(self, id):
+        '''Remove a course given its identifier'''
+        return CourseService.delete(id)
