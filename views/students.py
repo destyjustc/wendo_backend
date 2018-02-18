@@ -3,6 +3,7 @@ from flask import jsonify, request
 from flask_jwt import jwt_required
 from views.users import User
 from flask_restplus import Namespace, Resource, fields
+import uuid
 
 api = Namespace('students', description="Students related operations")
 
@@ -29,7 +30,12 @@ class Student(db.Model):
 
 student_api_model = api.model('Student', {
     'id': fields.String(required=True, description="The student identifier"),
-    'user_id': fields.Integer(required=True, description="The id of the user associated")
+    'user_id': fields.String(required=True, description="The id of the user associated")
+})
+
+student_post_model = api.model('Student', {
+    'username': fields.String(required=True, description="The username of the user"),
+    'password': fields.String(required=True, description="The password of the user")
 })
 
 class StudentService(object):
@@ -42,10 +48,13 @@ class StudentService(object):
 
     @classmethod
     def create(cls, data):
+        id = uuid.uuid4()
+        data['id'] = str(id)
         user = User(data)
         db.session.add(user)
         db.session.commit()
-        student = Student({"user_id": user.id})
+        id = uuid.uuid4()
+        student = Student({"user_id": user.id, "id": id})
         db.session.add(student)
         db.session.commit()
         return student, 201
@@ -69,7 +78,7 @@ class StudentListResource(Resource):
         return StudentService.get_list()
 
     @api.doc('create_new_student')
-    @api.marshal_with(student_api_model)
+    @api.marshal_with(student_post_model)
     def post(self):
         '''Create a student'''
         args = request.get_json()
@@ -83,9 +92,3 @@ class StudentResource(Resource):
     def get(self, id):
         '''Fetch a student given its identifier'''
         return StudentService.get(id)
-
-    # def put(self, id):
-    #     args = request.get_json()
-    #     student = Student.query.filter(Student.id == id).first()
-    #     student.update(args)
-    #     print(student)

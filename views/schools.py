@@ -2,7 +2,7 @@ from database import db
 from flask import jsonify, request
 from flask_jwt import jwt_required
 from flask_restplus import Namespace, Resource, fields
-# from uuid import UUID
+import uuid
 
 api = Namespace('schools', description="Schools related operations")
 
@@ -26,7 +26,7 @@ class School(db.Model):
 class SchoolService(object):
     @classmethod
     def get(cls, id):
-        school = School.query.filter(id=id).first()
+        school = School.query.filter_by(id=id).first()
         if school is not None:
             return school.as_dict()
         api.abort(404)
@@ -39,6 +39,8 @@ class SchoolService(object):
 
     @classmethod
     def create(cls, data):
+        id = uuid.uuid4()
+        data['id'] = str(id)
         school = School(data)
         db.session.add(school)
         db.session.commit()
@@ -46,8 +48,13 @@ class SchoolService(object):
 
 school_api_model = api.model('School', {
     'id': fields.String(required=True, description="The school identifier"),
-    'name': fields.Integer(required=True, description="The school name"),
-    'describe': fields.Integer(required=False, description="The school description"),
+    'name': fields.String(required=True, description="The school name"),
+    'describe': fields.String(required=False, description="The school description"),
+})
+
+school_post_model = api.model('School', {
+    'name': fields.String(required=True, description="The school name"),
+    'describe': fields.String(required=False, description="The school description"),
 })
 
 @api.route('/')
@@ -59,7 +66,7 @@ class SchoolListResource(Resource):
         return SchoolService.get_list()
 
     @api.doc('create_new_school')
-    @api.marshal_with(school_api_model)
+    @api.marshal_with(school_post_model)
     def post(self):
         '''Create a school'''
         args = request.get_json()
