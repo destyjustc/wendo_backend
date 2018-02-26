@@ -7,6 +7,7 @@ Create Date: 2018-02-18 10:00:04.173366
 """
 from alembic import op
 import sqlalchemy as sa
+import uuid
 
 
 # revision identifiers, used by Alembic.
@@ -25,7 +26,7 @@ def upgrade():
     sa.Column('fee', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('roles',
+    roles_table = op.create_table('roles',
     sa.Column('id', sa.String(length=36), nullable=False),
     sa.Column('name', sa.String(length=32), nullable=True),
     sa.Column('description', sa.String(length=128), nullable=True),
@@ -55,6 +56,15 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+
+    uuid1 = uuid.uuid4()
+    uuid2 = uuid.uuid4()
+    uuid3 = uuid.uuid4()
+    op.bulk_insert(roles_table, [
+        {'id': uuid1, 'name': 'admin'},
+        {'id': uuid2, 'name': 'staff'},
+        {'id': uuid3, 'name': 'student'}
+    ])
     # ### end Alembic commands ###
 
 

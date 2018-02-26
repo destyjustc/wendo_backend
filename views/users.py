@@ -9,8 +9,13 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.String(36), primary_key=True)
-    username = db.Column(db.String())
-    password = db.Column(db.String())
+    username = db.Column(db.String(36), nullable=False)
+    password = db.Column(db.String(128), nullable=False)
+    firstname = db.Column(db.String(36))
+    lastname = db.Column(db.String(36))
+    email = db.Column(db.String(128))
+    phone = db.Column(db.String(64))
+    enabled = db.Column(db.Boolean, default=False)
 
     def __init__(self, dict):
         for key in dict:
@@ -40,7 +45,7 @@ class UserService(object):
 
     @classmethod
     def get_list(cls):
-        users = User.query.all()
+        users = User.query.filter(User.enabled == Ture).all()
         user_list = [user.as_dict() for user in users]
         return user_list
 
@@ -79,6 +84,10 @@ user_api_model = api.model('User', {
     'id': fields.String(required=True, description="The user identifier"),
     'username': fields.String(required=True, description="The username"),
     'password': fields.String(required=True, description="The password"),
+    'firstname': fields.String(required=False, description="The first name"),
+    'lastname': fields.String(required=False, description="The last name"),
+    'email': fields.String(required=False, description="The email"),
+    'phone': fields.String(required=False, description="The phone number"),
 })
 
 @api.route('/signin')
