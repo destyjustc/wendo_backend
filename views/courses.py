@@ -2,6 +2,7 @@ from database import db
 from flask import jsonify, request
 from flask_jwt import jwt_required
 from views.users import User
+from views.schools import School
 from flask_restplus import Namespace, Resource, fields
 
 api = Namespace('courses', description="Courses related operations")
@@ -13,6 +14,8 @@ class Course(db.Model):
     name = db.Column(db.String(128))
     description = db.Column(db.String(256))
     fee = db.Column(db.Float())
+    school_id = db.Column(db.String(36), db.ForeignKey(School.id))
+    school = db.relationship(User, foreign_keys=school_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
         for key in dict:
@@ -32,7 +35,8 @@ course_api_model = api.model('Course', {
     'id': fields.String(required=True, description="The course identifier"),
     'name': fields.String(request=False, description="The course name"),
     'description': fields.String(request=False, description="The course description"),
-    'fee': fields.Float(request=False, description="The course fee")
+    'fee': fields.Float(request=False, description="The course fee"),
+    'school_id': fields.Float(request=False, description="The school id")
 })
 
 class CourseService(object):
