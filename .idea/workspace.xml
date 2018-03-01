@@ -4,6 +4,7 @@
     <list default="true" id="e1ce53e2-f9f9-4016-ab88-3345ee909a0c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/views/schools.py" afterPath="$PROJECT_DIR$/views/schools.py" />
       <change beforePath="$PROJECT_DIR$/views/students.py" afterPath="$PROJECT_DIR$/views/students.py" />
+      <change beforePath="$PROJECT_DIR$/views/users.py" afterPath="$PROJECT_DIR$/views/users.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,8 +21,8 @@
       <file leaf-file-name="users.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="16" column="36" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="16" selection-end-column="36" />
+            <state relative-caret-position="202">
+              <caret line="71" column="19" lean-forward="false" selection-start-line="71" selection-start-column="19" selection-end-line="71" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -66,8 +67,8 @@
       <file leaf-file-name="students.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/students.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="58" column="25" lean-forward="false" selection-start-line="58" selection-start-column="25" selection-end-line="58" selection-end-column="25" />
+            <state relative-caret-position="649">
+              <caret line="86" column="2" lean-forward="false" selection-start-line="86" selection-start-column="2" selection-end-line="86" selection-end-column="2" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -78,8 +79,8 @@
       <file leaf-file-name="schools.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/schools.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="574">
-              <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
+            <state relative-caret-position="1260">
+              <caret line="64" column="0" lean-forward="true" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -141,6 +142,9 @@
       <find>school</find>
       <find>uuid</find>
       <find>student_post_model</find>
+      <find>school_api_model</find>
+      <find>update</find>
+      <find>description</find>
     </findStrings>
     <dirStrings>
       <dir>C:\wendo\wendo_backend</dir>
@@ -169,11 +173,11 @@
         <option value="$PROJECT_DIR$/migrations/versions/f501955cb902_.py" />
         <option value="$PROJECT_DIR$/views/teachers.py" />
         <option value="$PROJECT_DIR$/migrations/versions/ffd52c9d6bda_.py" />
-        <option value="$PROJECT_DIR$/views/users.py" />
         <option value="$PROJECT_DIR$/views/user_roles.py" />
         <option value="$PROJECT_DIR$/views/course_users.py" />
         <option value="$PROJECT_DIR$/app.py" />
         <option value="$PROJECT_DIR$/views/courses.py" />
+        <option value="$PROJECT_DIR$/views/users.py" />
         <option value="$PROJECT_DIR$/views/schools.py" />
         <option value="$PROJECT_DIR$/views/students.py" />
       </list>
@@ -675,16 +679,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/course_users.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="875">
-          <caret line="67" column="33" lean-forward="true" selection-start-line="67" selection-start-column="33" selection-end-line="67" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/migrations/versions/89945cb7e50d_.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -741,18 +735,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/views/course_users.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="875">
+          <caret line="67" column="33" lean-forward="true" selection-start-line="67" selection-start-column="33" selection-end-line="67" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/views/users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="16" column="36" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="16" selection-end-column="36" />
+        <state relative-caret-position="202">
+          <caret line="71" column="19" lean-forward="false" selection-start-line="71" selection-start-column="19" selection-end-line="71" selection-end-column="19" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/views/students.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="58" column="25" lean-forward="false" selection-start-line="58" selection-start-column="25" selection-end-line="58" selection-end-column="25" />
+        <state relative-caret-position="649">
+          <caret line="86" column="2" lean-forward="false" selection-start-line="86" selection-start-column="2" selection-end-line="86" selection-end-column="2" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
@@ -761,8 +765,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/schools.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="574">
-          <caret line="66" column="18" lean-forward="true" selection-start-line="66" selection-start-column="18" selection-end-line="66" selection-end-column="18" />
+        <state relative-caret-position="1260">
+          <caret line="64" column="0" lean-forward="true" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
           <folding />
         </state>
       </provider>

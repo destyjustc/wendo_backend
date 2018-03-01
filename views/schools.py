@@ -23,6 +23,10 @@ class School(db.Model):
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+    def update(self, dict):
+        for i in dict:
+            setattr(self, i, dict[i])
+
 class SchoolService(object):
     @classmethod
     def get(cls, id):
@@ -49,13 +53,23 @@ class SchoolService(object):
         db.session.commit()
         return school.as_dict()
 
-school_api_model = api.model('School', {
+    @classmethod
+    def update(cls, id, data):
+        data.pop('id', None)
+        school = School.query.filter_by(id=id).first()
+        if not school:
+            api.abort(404, "School does not exist.")
+        school.update(data)
+        db.session.commit()
+        return school
+
+school_api_model = api.model('School_Response', {
     'id': fields.String(required=True, description="The school identifier"),
     'name': fields.String(required=True, description="The school name"),
     'describe': fields.String(required=False, description="The school description"),
 })
 
-school_post_model = api.model('School', {
+school_post_model = api.model('School_Request', {
     'name': fields.String(required=True, description="The school name"),
     'describe': fields.String(required=False, description="The school description"),
 })
@@ -69,7 +83,8 @@ class SchoolListResource(Resource):
         return SchoolService.get_list()
 
     @api.doc('create_new_school')
-    @api.marshal_with(school_post_model)
+    @api.marshal_with(school_api_model)
+    @api.expect(school_post_model)
     def post(self):
         '''Create a school'''
         args = request.get_json()
@@ -83,3 +98,11 @@ class StudentResource(Resource):
     def get(self, id):
         '''Fetch a school given its identifier'''
         return SchoolService.get(id)
+
+    @api.doc('update_school')
+    @api.marshal_with(school_api_model)
+    @api.expect(school_post_model)
+    def put(self, id):
+        '''Fetch a school given its identifier'''
+        args = request.get_json()
+        return SchoolService.update(id, args)

@@ -67,13 +67,9 @@ class UserService(object):
 
     @classmethod
     def update(cls, id, data):
-        user = User.query.filter(User.id == id).first()
-        try:
-            user.update(data)
-            db.session.commit()
-            return user.as_dict()
-        except Exception:
-            api.abort(400)
+        data.pop('username', None)
+        user = User.query.filter_by(id=id).update(data)
+        return user
 
 user_signin_api_model = api.model('User', {
     'username': fields.String(required=True, description="The username"),
