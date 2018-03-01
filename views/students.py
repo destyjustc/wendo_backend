@@ -1,7 +1,7 @@
 from database import db
 from flask import jsonify, request
 from flask_jwt import jwt_required
-from views.users import User
+from views.users import User, user_api_model
 from flask_restplus import Namespace, Resource, fields
 import uuid
 
@@ -30,12 +30,17 @@ class Student(db.Model):
 
 student_api_model = api.model('Student', {
     'id': fields.String(required=True, description="The student identifier"),
-    'user_id': fields.String(required=True, description="The id of the user associated")
+    'user_id': fields.String(required=True, description="The id of the user associated"),
+    'user': fields.Nested(user_api_model)
 })
 
-student_post_model = api.model('Student', {
-    'username': fields.String(required=True, description="The username of the user"),
-    'password': fields.String(required=True, description="The password of the user")
+student_request_model = api.inherit('Resource', {
+    'username': fields.String,
+    'password': fields.String,
+    'firstname': fields.String,
+    'lastname': fields.String,
+    'email': fields.String,
+    'phone': fields.String,
 })
 
 class StudentService(object):
@@ -43,18 +48,22 @@ class StudentService(object):
     def get(cls, id):
         student = Student.query.filter_by(id=id).first()
         if student is not None:
-            return student.as_dict()
+            return student
         api.abort(404)
 
     @classmethod
     def create(cls, data):
+        #TODO: check email or phone number exists
+        tmp_user = User.query.filter(User.username == data['username']).first()
+        if tmp_user:
+            api.abort(400, "Username already exists.")
         id = uuid.uuid4()
         data['id'] = str(id)
         user = User(data)
         db.session.add(user)
         db.session.commit()
         id = uuid.uuid4()
-        student = Student({"user_id": user.id, "id": id})
+        student = Student({"user_id": user.id, "id": str(id)})
         db.session.add(student)
         db.session.commit()
         return student, 201
@@ -62,11 +71,7 @@ class StudentService(object):
     @classmethod
     def get_list(cls):
         students = Student.query.all()
-        student_list = [student.as_dict() for student in students]
-        user_list = [student.user.as_dict() for student in students]
-        for s, u in zip(student_list, user_list):
-            s['user'] = u
-        return student_list
+        return students
 
 
 @api.route('/')
@@ -78,7 +83,8 @@ class StudentListResource(Resource):
         return StudentService.get_list()
 
     @api.doc('create_new_student')
-    @api.marshal_with(student_post_model)
+    @api.marshal_with(student_api_model)
+    @api.expect(student_request_model)
     def post(self):
         '''Create a student'''
         args = request.get_json()

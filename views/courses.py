@@ -15,7 +15,7 @@ class Course(db.Model):
     description = db.Column(db.String(256))
     fee = db.Column(db.Float())
     school_id = db.Column(db.String(36), db.ForeignKey(School.id))
-    school = db.relationship(User, foreign_keys=school_id, post_update=True, uselist=False)
+    school = db.relationship(School, foreign_keys=school_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
         for key in dict:
