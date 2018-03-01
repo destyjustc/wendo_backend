@@ -32,22 +32,11 @@ class CourseUser(db.Model):
         for i in dict:
             setattr(self, i, dict[i])
 
-course_user_api_model = api.model('CourseUser', {
-    'id': fields.String(required=True, description="The course_user record identifier"),
-    'user_id': fields.String(required=True, description="The id of the user associated"),
-    'course_id': fields.String(required=True, description="The id of the course associated")
-})
-
-course_user_post_model = api.model('CourseUser', {
-    'user_id': fields.String(required=True, description="The id of the user associated"),
-    'course_id': fields.String(required=True, description="The id of the course associated")
-})
-
 class CourseUserService(object):
     @classmethod
     def get_by_course_id(cls, id):
-        course_users = CourseUser.query.filter_by(CourseUser.course_id == id).all()
-        return [course_user.as_dict() for course_user in course_users]
+        course_users = CourseUser.query.filter_by(course_id=id).all()
+        return course_users
 
     @classmethod
     def get_by_user_id_and_schoold_id(cls, user_id, school_id):
@@ -63,10 +52,20 @@ class CourseUserService(object):
         db.session.commit()
         return course_user, 201
 
+course_user_request_model = api.model('Course_User_Request', {
+    'user_id': fields.String(required=True, description="The id of the user associated"),
+    'course_id': fields.String(required=True, description="The id of the course associated")
+})
+
+course_user_response_model = api.inherit('Course_User_Response', course_user_request_model, {
+    'id': fields.String(required=True, description="The course_user record identifier")
+})
+
 @api.route('/')
 class CourseUserListResource(Resource):
-    @api.doc('list_course_users')
-    @api.marshal_with(course_user_post_model)
+    @api.doc('create_course_users')
+    @api.expect(course_user_request_model)
+    @api.marshal_with(course_user_response_model)
     def post(self):
         '''Create a new course user record'''
         args = request.get_json()
@@ -76,17 +75,18 @@ class CourseUserListResource(Resource):
 @api.param('id', 'The course id')
 class CourseUserCourseResource(Resource):
     @api.doc('get_by_course_id')
-    @api.marshal_with(course_user_api_model)
+    @api.marshal_with(course_user_response_model)
     def get(self, id):
         '''Fetch course user records given course id'''
         return CourseUserService.get_by_course_id(id)
 
-@api.route('/user/<user_id>/school/<school_id>')
-@api.param('id', 'The user id')
-class CourseUserUserResource(Resource):
-    @api.doc('get_by_user_id')
-    @api.marshal_with(course_user_api_model)
-    def get(self, user_id, school_id):
-        '''Fetch course user records given user id'''
-        return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
+# @api.route('/school/<school_id>')
+# @api.param('id', 'The user id')
+# class CourseUserUserResource(Resource):
+#     @api.doc('get_by_user_id')
+#     @api.marshal_with(course_user_response_model)
+#     def get(self, school_id):
+#         '''Fetch course user records given user id'''
+#         user_id = ''
+#         return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
 

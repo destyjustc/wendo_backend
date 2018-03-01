@@ -63,28 +63,26 @@ class SchoolService(object):
         db.session.commit()
         return school
 
-school_api_model = api.model('School_Response', {
-    'id': fields.String(required=True, description="The school identifier"),
+school_request_model = api.model('School_Request', {
     'name': fields.String(required=True, description="The school name"),
     'describe': fields.String(required=False, description="The school description"),
 })
 
-school_post_model = api.model('School_Request', {
-    'name': fields.String(required=True, description="The school name"),
-    'describe': fields.String(required=False, description="The school description"),
+school_response_model = api.inherit('School_Response', school_request_model, {
+    'id': fields.String(description="The school identifier")
 })
 
 @api.route('/')
 class SchoolListResource(Resource):
     @api.doc('list_schools')
-    @api.marshal_list_with(school_api_model)
+    @api.marshal_list_with(school_response_model)
     def get(self):
         '''List all schools'''
         return SchoolService.get_list()
 
     @api.doc('create_new_school')
-    @api.marshal_with(school_api_model)
-    @api.expect(school_post_model)
+    @api.expect(school_request_model)
+    @api.marshal_with(school_response_model)
     def post(self):
         '''Create a school'''
         args = request.get_json()
@@ -94,14 +92,14 @@ class SchoolListResource(Resource):
 @api.param('id', 'The school id')
 class StudentResource(Resource):
     @api.doc('get_school')
-    @api.marshal_with(school_api_model)
+    @api.marshal_with(school_response_model)
     def get(self, id):
         '''Fetch a school given its identifier'''
         return SchoolService.get(id)
 
     @api.doc('update_school')
-    @api.marshal_with(school_api_model)
-    @api.expect(school_post_model)
+    @api.expect(school_request_model)
+    @api.marshal_with(school_response_model)
     def put(self, id):
         '''Fetch a school given its identifier'''
         args = request.get_json()

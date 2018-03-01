@@ -4,6 +4,7 @@ from flask_jwt import jwt_required
 from views.users import User
 from views.schools import School
 from flask_restplus import Namespace, Resource, fields
+import uuid
 
 api = Namespace('courses', description="Courses related operations")
 
@@ -31,24 +32,18 @@ class Course(db.Model):
         for i in dict:
             setattr(self, i, dict[i])
 
-course_api_model = api.model('Course', {
-    'id': fields.String(required=True, description="The course identifier"),
-    'name': fields.String(request=False, description="The course name"),
-    'description': fields.String(request=False, description="The course description"),
-    'fee': fields.Float(request=False, description="The course fee"),
-    'school_id': fields.Float(request=False, description="The school id")
-})
-
 class CourseService(object):
     @classmethod
     def get(cls, id):
         course = Course.query.filter_by(id=id).first()
         if course:
-            return course.as_dict()
+            return course
         api.abort(404)
 
     @classmethod
     def create(cls, data):
+        id = uuid.uuid4()
+        data['id'] = str(id)
         course = Course(data)
         db.session.add(course)
         db.session.commit()
@@ -57,38 +52,50 @@ class CourseService(object):
     @classmethod
     def get_list(cls):
         courses = Course.query.all()
-        course_list = [course.as_dict() for course in courses]
-        return course_list
+        return courses
 
     @classmethod
     def update(cls, id, data):
-        course = Course.query.filter(id=id).first()
-        try:
-            course.update(data)
-            db.session.commit()
-            return course.as_dict()
-        except Exception:
-            api.abort(400)
+        data.pop('id', None)
+        data.pop('school_id', None)
+        course = Course.query.filter_by(id=id).first()
+        if not course:
+            api.abort(404, 'Course does not exist.')
+        course.update(data)
+        db.session.commit()
+        return course
 
     @classmethod
     def delete(cls, id):
-        course = Course.query.filter(id=id).first()
+        course = Course.query.filter_by(id=id).first()
         if course:
             db.session.delete(course)
             db.session.commit()
-            return course.as_dict()
+            return course
         api.abort(404)
+
+course_request_model = api.model('Course_Request', {
+    'name': fields.String(request=False, description="The course name"),
+    'description': fields.String(request=False, description="The course description"),
+    'fee': fields.Float(request=False, description="The course fee"),
+    'school_id': fields.String(description="The school id")
+})
+
+course_response_model = api.inherit('Course_Response', course_request_model, {
+    'id': fields.String(description="The course identifier")
+})
 
 @api.route('/')
 class CourseListResource(Resource):
     @api.doc('list_courses')
-    @api.marshal_list_with(course_api_model)
+    @api.marshal_list_with(course_response_model)
     def get(self):
         '''List all courses'''
         return CourseService.get_list()
 
     api.doc('create_new_course')
-    @api.marshal_with(course_api_model)
+    @api.expect(course_request_model)
+    @api.marshal_with(course_response_model)
     def post(self):
         '''Create a course'''
         args = request.get_json()
@@ -98,20 +105,21 @@ class CourseListResource(Resource):
 @api.param('id', 'The course id')
 class CourseResource(Resource):
     @api.doc('get_course')
-    @api.marshal_with(course_api_model)
+    @api.marshal_with(course_response_model)
     def get(self, id):
         '''Fetch a course given its identifier'''
         return CourseService.get(id)
 
     @api.doc('update_course')
-    @api.marshal_with(course_api_model)
+    @api.expect(course_request_model)
+    @api.marshal_with(course_response_model)
     def put(self, id):
         '''Update a course given its identifier'''
         args = request.get_json()
         return CourseService.update(id, args)
 
     @api.doc('delete_course')
-    @api.marshal_with(course_api_model)
-    def put(self, id):
+    @api.marshal_with(course_response_model)
+    def delete(self, id):
         '''Remove a course given its identifier'''
         return CourseService.delete(id)

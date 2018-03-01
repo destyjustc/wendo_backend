@@ -1,7 +1,7 @@
 from database import db
 from flask import jsonify, request
 from flask_jwt import jwt_required
-from views.users import User, user_api_model, UserService
+from views.users import User, user_response_model, UserService
 from flask_restplus import Namespace, Resource, fields
 import uuid
 
@@ -74,7 +74,7 @@ class StudentService(object):
 student_api_model = api.model('Student_Response', {
     'id': fields.String(description="The student identifier"),
     'user_id': fields.String(description="The id of the user associated"),
-    'user': fields.Nested(user_api_model)
+    'user': fields.Nested(user_response_model)
 })
 
 student_request_model = api.model('Student_Request', {
