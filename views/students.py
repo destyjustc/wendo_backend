@@ -56,7 +56,7 @@ class StudentService(object):
         #TODO: check email or phone number exists
         tmp_user = User.query.filter(User.username == data['username']).first()
         if tmp_user:
-            api.abort(400, "Username already exists.")
+            api.abort(409, "Username already exists.")
         id = uuid.uuid4()
         data['id'] = str(id)
         user = User(data)

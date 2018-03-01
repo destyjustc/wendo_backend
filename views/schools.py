@@ -39,6 +39,9 @@ class SchoolService(object):
 
     @classmethod
     def create(cls, data):
+        school = School.query.filter_by(name=data['name']).first()
+        if school:
+            api.abort(409, "Name already exists.")
         id = uuid.uuid4()
         data['id'] = str(id)
         school = School(data)
