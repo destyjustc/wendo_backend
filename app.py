@@ -12,6 +12,7 @@ from views.users import api as user_api
 from views.user_roles import api as user_role_api
 from views.course_users import api as course_user_api
 from views.roles import api as role_api
+from views.payment import api as payment_api
 from flask_cors import CORS
 from flask_restplus import Api
 
@@ -30,6 +31,7 @@ def init_api():
     api.add_namespace(user_role_api, path='/user_role')
     api.add_namespace(course_user_api, path='/course_user')
     api.add_namespace(role_api, path='/role')
+    api.add_namespace(payment_api, path='/payment')
     return api
 
 def create_app():
