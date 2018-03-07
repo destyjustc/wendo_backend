@@ -97,6 +97,7 @@ class StudentListResource(Resource):
         return StudentService.create(args, school_id)
 
 @api.route('/school/<school_id>/<id>')
+@api.param('school_id', 'The school id')
 @api.param('id', 'The student id')
 class StudentResource(Resource):
     @api.doc('get_student')
