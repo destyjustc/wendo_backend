@@ -40,7 +40,10 @@ class CourseUserService(object):
 
     @classmethod
     def get_by_user_id_and_schoold_id(cls, user_id, school_id):
-        course_users = CourseUser.query.join(Course, Course.id == CourseUser.course_id).filter(CourseUser.user_id==user_id).filter(Course.school_id==school_id).all()
+        course_users = CourseUser.query.join(Course, Course.id == CourseUser.course_id)\
+            .filter(CourseUser.user_id==user_id)\
+            .filter(Course.school_id==school_id)\
+            .all()
         return [course_user.as_dict() for course_user in course_users]
 
     @classmethod

@@ -2,6 +2,7 @@ from database import db
 from flask import Blueprint, jsonify, request
 from flask_jwt import JWT, current_identity, jwt_required
 from flask_restplus import Namespace, Resource, fields
+import uuid
 
 api = Namespace('users', description="Users related operations")
 
@@ -37,29 +38,34 @@ class UserService(object):
         user = User.query.filter(User.username == data['username']). \
             filter(User.password == data['password']).first()
         if user is not None:
-            return user.as_dict()
+            return user
         api.abort(401)
 
     @classmethod
     def get(cls, id):
         user = User.query.filter(User.id == id).first()
         if user is not None:
-            return user.as_dict()
+            return user
         api.abort(404)
 
     @classmethod
     # @jwt_required()
     def get_list(cls):
         users = User.query.filter(User.enabled == True).all()
-        user_list = [user.as_dict() for user in users]
-        return user_list
+        return users
 
     @classmethod
     def create(cls, data):
+        # TODO: check email or phone number exists
+        tmp_user = User.query.filter(User.username == data['username']).first()
+        if tmp_user:
+            api.abort(409, "Username already exists.")
+        id = uuid.uuid4()
+        data['id'] = str(id)
         user = User(data)
         db.session.add(user)
         db.session.commit()
-        return user.as_dict()
+        return user
 
     @classmethod
     def delete(cls, id):
@@ -67,7 +73,7 @@ class UserService(object):
         if user is not None:
             db.session.delete(user)
             db.session.commit()
-            return user.as_dict()
+            return user
         api.abort(404)
 
     @classmethod
