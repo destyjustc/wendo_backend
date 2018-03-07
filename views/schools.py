@@ -3,29 +3,19 @@ from flask import jsonify, request
 from flask_jwt import jwt_required
 from flask_restplus import Namespace, Resource, fields
 import uuid
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('schools', description="Schools related operations")
 
-class School(db.Model):
+class School(ModelCommon, ModelSuper):
     __tablename__ = 'schools'
 
-    id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String())
     describe = db.Column(db.String())
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}><name {}><description {}>'.format(self.id, self.name, self.description)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, dict):
-        for i in dict:
-            setattr(self, i, dict[i])
+        ModelSuper.__init__(self, dict)
 
 class SchoolService(object):
     @classmethod
@@ -68,9 +58,7 @@ school_request_model = api.model('School_Request', {
     'describe': fields.String(required=False, description="The school description"),
 })
 
-school_response_model = api.inherit('School_Response', school_request_model, {
-    'id': fields.String(description="The school identifier")
-})
+school_response_model = api.inherit('School_Response', school_request_model, model_super_model, {})
 
 @api.route('/')
 class SchoolListResource(Resource):

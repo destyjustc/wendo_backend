@@ -1,9 +1,10 @@
 from database import db
 from flask_restplus import Namespace, Resource, fields
+from views.model_super import ModelSuper
 
 api = Namespace('role', description="Role related operations")
 
-class Role(db.Model):
+class Role(db.Model, ModelSuper):
     __tablename__ = 'roles'
 
     id = db.Column(db.String(36), primary_key=True)
@@ -11,14 +12,7 @@ class Role(db.Model):
     description = db.Column(db.String(128))
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}><name {}><description {}>'.format(self.id, self.name, self.description)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        ModelSuper.__init__(self, dict)
 
 class RoleService(object):
     @classmethod

@@ -1,4 +1,3 @@
-
 class ModelSuper():
     def __init__(self, dict):
         for key in dict:

@@ -6,31 +6,21 @@ from views.schools import School
 from flask import jsonify, request
 from flask_restplus import Namespace, Resource, fields
 import uuid
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('course_users', description="Course and student relationship operations")
 
-class CourseUser(db.Model):
+class CourseUser(ModelCommon, ModelSuper):
     __tablename__ = 'course_users'
 
-    id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey(User.id))
     course_id = db.Column(db.String(36), db.ForeignKey(Course.id))
     user = db.relationship(User, foreign_keys=user_id, post_update=True, uselist=False)
     course = db.relationship(Course, foreign_keys=course_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, dict):
-        for i in dict:
-            setattr(self, i, dict[i])
+        ModelSuper.__init__(self, dict)
 
 class CourseUserService(object):
     @classmethod
@@ -60,9 +50,7 @@ course_user_request_model = api.model('Course_User_Request', {
     'course_id': fields.String(required=True, description="The id of the course associated")
 })
 
-course_user_response_model = api.inherit('Course_User_Response', course_user_request_model, {
-    'id': fields.String(required=True, description="The course_user record identifier")
-})
+course_user_response_model = api.inherit('Course_User_Response', course_user_request_model, model_super_model, {})
 
 @api.route('/')
 class CourseUserListResource(Resource):

@@ -5,13 +5,14 @@ from views.schools import School, school_response_model
 from flask import jsonify, request
 from flask_restplus import Namespace, Resource, fields
 import uuid
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('user_roles', description="User and role relationship operations")
 
-class UserRole(db.Model):
+class UserRole(ModelCommon, ModelSuper):
     __tablename__ = 'user_roles'
 
-    id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey(User.id))
     role_id = db.Column(db.String(36), db.ForeignKey(Role.id))
     school_id = db.Column(db.String(36), db.ForeignKey(School.id))
@@ -20,18 +21,7 @@ class UserRole(db.Model):
     school = db.relationship(School, foreign_keys=school_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, dict):
-        for i in dict:
-            setattr(self, i, dict[i])
+        ModelSuper.__init__(self, dict)
 
 user_role_request_model = api.model('User_Role_Request', {
     'user_id': fields.String(required=True, description="The user identifier"),
@@ -39,8 +29,7 @@ user_role_request_model = api.model('User_Role_Request', {
     'school_id': fields.String(required=True, description="The school identifier"),
 })
 
-user_role_response_model = api.model('User_Role_Response', {
-    'id': fields.String(required=True, description="The user_role identifier"),
+user_role_response_model = api.inherit('User_Role_Response', model_super_model, {
     'user': fields.Nested(user_response_model),
     'role': fields.Nested(role_response_model),
     'school': fields.Nested(school_response_model),

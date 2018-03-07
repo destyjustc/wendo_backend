@@ -6,13 +6,14 @@ from views.schools import School
 from flask_restplus import Namespace, Resource, fields
 import uuid
 from views.model_super import ModelSuper
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('courses', description="Courses related operations")
 
-class Course(db.Model, ModelSuper):
+class Course(ModelCommon, ModelSuper):
     __tablename__ = 'courses'
 
-    id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(128))
     description = db.Column(db.String(256))
     fee = db.Column(db.Float())
@@ -20,8 +21,7 @@ class Course(db.Model, ModelSuper):
     school = db.relationship(School, foreign_keys=school_id, post_update=True, uselist=False)
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
+        ModelSuper.__init__(self, dict)
 
 class CourseService(object):
     @classmethod
@@ -73,9 +73,7 @@ course_request_model = api.model('Course_Request', {
     'school_id': fields.String(description="The school id")
 })
 
-course_response_model = api.inherit('Course_Response', course_request_model, {
-    'id': fields.String(description="The course identifier")
-})
+course_response_model = api.inherit('Course_Response', course_request_model, model_super_model, {})
 
 @api.route('/school/<school_id>')
 @api.param('school_id', 'The school id')

@@ -4,34 +4,22 @@ from views.courses import Course
 from flask import jsonify, request
 from flask_restplus import Namespace, Resource, fields
 import uuid
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('payment', description="Payment related operations")
 
-class Payment(db.Model):
+class Payment(ModelCommon, ModelSuper):
     __tablename__ = 'payments'
 
-    id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey(User.id))
     course_id = db.Column(db.String(36), db.ForeignKey(Course.id))
     user = db.relationship(User, foreign_keys=user_id, post_update=True, uselist=False)
     course = db.relationship(Course, foreign_keys=course_id, post_update=True, uselist=False)
     payment = db.Column(db.Float(), default=0)
-    created_on = db.Column(db.DateTime, server_default=db.func.now())
-    updated_on = db.Column(db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now())
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, dict):
-        for i in dict:
-            setattr(self, i, dict[i])
+        ModelSuper.__init__(self, dict)
 
 class PaymentService(object):
     @classmethod
@@ -55,9 +43,7 @@ payment_request_model = api.model('Payment_Request', {
     'payment': fields.Float(required=True, description="The amount paid")
 })
 
-payment_response_model = api.inherit('Payment_Response', payment_request_model, {
-    'id': fields.String(required=True, description="The payment record identifier")
-})
+payment_response_model = api.inherit('Payment_Response', payment_request_model, model_super_model, {})
 
 @api.route('/')
 class PaymentListResource(Resource):

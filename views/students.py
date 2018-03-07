@@ -8,6 +8,7 @@ from views.schools import School
 from flask_restplus import Namespace, Resource, fields
 import uuid
 from views.model_super import ModelSuper
+from views.model_common import model_super_model
 
 api = Namespace('students', description="Students related operations")
 
@@ -75,9 +76,7 @@ student_request_model = api.model('Student_Request', {
     'phone': fields.String(description="The phone number"),
 })
 
-student_api_model = api.inherit('Student_Response', student_request_model, {
-    'id': fields.String(description="The student identifier")
-})
+student_api_model = api.inherit('Student_Response', student_request_model, model_super_model, {})
 
 @api.route('/school/<school_id>')
 @api.param('school_id', 'The school id')

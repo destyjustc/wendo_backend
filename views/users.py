@@ -3,13 +3,14 @@ from flask import Blueprint, jsonify, request
 from flask_jwt import JWT, current_identity, jwt_required
 from flask_restplus import Namespace, Resource, fields
 import uuid
+from views.model_common import ModelCommon, model_super_model
+from views.model_super import ModelSuper
 
 api = Namespace('users', description="Users related operations")
 
-class User(db.Model):
+class User(ModelCommon, ModelSuper):
     __tablename__ = 'users'
 
-    id = db.Column(db.String(36), primary_key=True)
     username = db.Column(db.String(36), nullable=False)
     password = db.Column(db.String(128), nullable=False)
     firstname = db.Column(db.String(36))
@@ -19,18 +20,7 @@ class User(db.Model):
     enabled = db.Column(db.Boolean, default=True)
 
     def __init__(self, dict):
-        for key in dict:
-            setattr(self, key, dict[key])
-
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-    def update(self, dict):
-        for i in dict:
-            setattr(self, i, dict[i])
+        ModelSuper.__init__(self, dict)
 
 class UserService(object):
     @classmethod
@@ -93,9 +83,7 @@ user_request_model = api.model('User_request', {
     'phone': fields.String(required=False, description="The phone number"),
 })
 
-user_response_model = api.inherit('User_response', user_request_model, {
-    'id': fields.String(required=True, description="The user identifier")
-})
+user_response_model = api.inherit('User_response', user_request_model, model_super_model, {})
 
 # @api.route('/signin')
 # class UserSigninResource(Resource):
