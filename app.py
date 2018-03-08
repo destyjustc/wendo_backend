@@ -13,6 +13,7 @@ from views.user_roles import api as user_role_api
 from views.course_users import api as course_user_api
 from views.roles import api as role_api
 from views.payment import api as payment_api
+from views.model_common import api as common_api
 from flask_cors import CORS
 from flask_restplus import Api
 
@@ -23,6 +24,7 @@ def init_api():
         description="Wendo application apis",
         doc='/doc/'
     )
+    api.add_namespace(common_api, path="/common")
     api.add_namespace(student_api, path="/student")
     api.add_namespace(school_api, path="/school")
     api.add_namespace(user_api, path="/user")

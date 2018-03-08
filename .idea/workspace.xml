@@ -2,27 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1ce53e2-f9f9-4016-ab88-3345ee909a0c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/views/model_common.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/migrations/README" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/env.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/47a43f2671d4_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/49e93ed839b0_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/4b3398898454_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/89945cb7e50d_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/fec9858d2191_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/migrations/versions/ffd52c9d6bda_.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/views/course_users.py" afterPath="$PROJECT_DIR$/views/course_users.py" />
-      <change beforePath="$PROJECT_DIR$/views/courses.py" afterPath="$PROJECT_DIR$/views/courses.py" />
-      <change beforePath="$PROJECT_DIR$/views/model_super.py" afterPath="$PROJECT_DIR$/views/model_super.py" />
-      <change beforePath="$PROJECT_DIR$/views/payment.py" afterPath="$PROJECT_DIR$/views/payment.py" />
-      <change beforePath="$PROJECT_DIR$/views/roles.py" afterPath="$PROJECT_DIR$/views/roles.py" />
-      <change beforePath="$PROJECT_DIR$/views/schools.py" afterPath="$PROJECT_DIR$/views/schools.py" />
-      <change beforePath="$PROJECT_DIR$/views/students.py" afterPath="$PROJECT_DIR$/views/students.py" />
-      <change beforePath="$PROJECT_DIR$/views/user_roles.py" afterPath="$PROJECT_DIR$/views/user_roles.py" />
-      <change beforePath="$PROJECT_DIR$/views/users.py" afterPath="$PROJECT_DIR$/views/users.py" />
+      <change beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -36,11 +16,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="users.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="users.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/users.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="89" column="30" lean-forward="true" selection-start-line="89" selection-start-column="30" selection-end-line="89" selection-end-column="30" />
+            <state relative-caret-position="1117">
+              <caret line="85" column="19" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="19" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="496">
+              <caret line="26" column="49" lean-forward="false" selection-start-line="26" selection-start-column="49" selection-end-line="26" selection-end-column="49" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -72,6 +64,18 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="students.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/views/students.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="78" column="17" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="17" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="schools.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/schools.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -96,18 +100,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="course_users.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/views/course_users.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="52" column="113" lean-forward="false" selection-start-line="52" selection-start-column="113" selection-end-line="52" selection-end-column="113" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="model_super.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/model_super.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -121,8 +113,8 @@
       <file leaf-file-name="model_common.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/model_common.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="15" column="86" lean-forward="true" selection-start-line="15" selection-start-column="86" selection-end-line="15" selection-end-column="86" />
+            <state relative-caret-position="210">
+              <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="57" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -153,7 +145,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>stud</find>
       <find>put</find>
       <find>get_list</find>
       <find>course_api_model</find>
@@ -183,6 +174,7 @@
       <find>user</find>
       <find>role</find>
       <find>create</find>
+      <find>user_request_model</find>
     </findStrings>
     <dirStrings>
       <dir>C:\wendo\wendo_backend</dir>
@@ -212,7 +204,6 @@
         <option value="$PROJECT_DIR$/migrations/versions/f501955cb902_.py" />
         <option value="$PROJECT_DIR$/migrations/versions/ffd52c9d6bda_.py" />
         <option value="$PROJECT_DIR$/views/teachers.py" />
-        <option value="$PROJECT_DIR$/app.py" />
         <option value="$PROJECT_DIR$/util/__init__.py" />
         <option value="$PROJECT_DIR$/views/roles.py" />
         <option value="$PROJECT_DIR$/migrations/versions/a3294373334d_.py" />
@@ -225,6 +216,7 @@
         <option value="$PROJECT_DIR$/views/schools.py" />
         <option value="$PROJECT_DIR$/views/user_roles.py" />
         <option value="$PROJECT_DIR$/views/users.py" />
+        <option value="$PROJECT_DIR$/app.py" />
       </list>
     </option>
   </component>
@@ -486,6 +478,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1234375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -685,14 +678,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="43" column="20" lean-forward="false" selection-start-line="43" selection-start-column="20" selection-end-line="43" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/migrations/versions/abc92150a3aa_.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -707,24 +692,6 @@
           <caret line="89" column="64" lean-forward="true" selection-start-line="89" selection-start-column="64" selection-end-line="89" selection-end-column="64" />
           <folding>
             <element signature="e#99#121#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/model_super.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/views/model_common.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" column="86" lean-forward="true" selection-start-line="15" selection-start-column="86" selection-end-line="15" selection-end-column="86" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -791,8 +758,36 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/users.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="89" column="30" lean-forward="true" selection-start-line="89" selection-start-column="30" selection-end-line="89" selection-end-column="30" />
+        <state relative-caret-position="1117">
+          <caret line="85" column="19" lean-forward="false" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/model_super.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/model_common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="496">
+          <caret line="26" column="49" lean-forward="false" selection-start-line="26" selection-start-column="49" selection-end-line="26" selection-end-column="49" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
@@ -801,8 +796,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/students.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="21" column="47" lean-forward="false" selection-start-line="21" selection-start-column="47" selection-end-line="21" selection-end-column="47" />
+        <state relative-caret-position="126">
+          <caret line="78" column="17" lean-forward="false" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="17" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
