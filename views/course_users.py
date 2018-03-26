@@ -42,7 +42,15 @@ class CourseUserService(object):
             .filter(CourseUser.user_id==user_id)\
             .filter(Course.school_id==school_id)\
             .all()
-        return [course_user.as_dict() for course_user in course_users]
+        for cu in course_users:
+            cu = cu.as_dict()
+            user_id = cu['user_id']
+            user = UserService.get(user_id)
+            cu['user'] = user
+            course_id = cu['course_id']
+            course = CourseService.get_by_course_id(course_id)
+            cu['course'] = course
+        return course_users
 
     @classmethod
     def create(cls, data):
@@ -83,13 +91,14 @@ class CourseUserCourseResource(Resource):
         '''Fetch course user records given course id'''
         return CourseUserService.get_by_course_id(id)
 
-@api.route('/school/<school_id>/user/id')
+@api.route('/school/<school_id>/user/<user_id>')
 @api.param('school_id', 'The school id')
-@api.param('id', 'The user id')
+@api.param('user_id', 'The user id')
 class CourseUserUserResource(Resource):
     @api.doc('get_by_user_id')
     @api.marshal_list_with(course_user_response_model)
-    def get(self, school_id, id):
+    def get(self, school_id, user_id):
         '''Fetch course user records given user id'''
-        return CourseUserService.get_by_user_id_and_schoold_id(id, school_id)
+        print(school_id, user_id)
+        return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
 
