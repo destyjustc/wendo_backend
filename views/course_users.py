@@ -1,6 +1,6 @@
 from database import db
-from views.users import User
-from views.courses import Course
+from views.users import User, user_response_model, UserService
+from views.courses import Course, course_response_model, CourseService
 from views.roles import Role
 from views.schools import School
 from flask import jsonify, request
@@ -26,6 +26,14 @@ class CourseUserService(object):
     @classmethod
     def get_by_course_id(cls, id):
         course_users = CourseUser.query.filter_by(course_id=id).all()
+        for cu in course_users:
+            cu = cu.as_dict()
+            user_id = cu['user_id']
+            user = UserService.get(user_id)
+            cu['user'] = user
+            course_id = cu['course_id']
+            course = CourseService.get_by_course_id(course_id)
+            cu['course'] = course
         return course_users
 
     @classmethod
@@ -45,12 +53,16 @@ class CourseUserService(object):
         db.session.commit()
         return course_user, 201
 
+
 course_user_request_model = api.model('Course_User_Request', {
     'user_id': fields.String(required=True, description="The id of the user associated"),
     'course_id': fields.String(required=True, description="The id of the course associated")
 })
 
-course_user_response_model = api.inherit('Course_User_Response', course_user_request_model, model_super_model, {})
+course_user_response_model = api.inherit('Course_User_Response', course_user_request_model, model_super_model, {
+    'user': fields.Nested(user_response_model),
+    'course': fields.Nested(course_response_model)
+})
 
 @api.route('/')
 class CourseUserListResource(Resource):
@@ -66,18 +78,18 @@ class CourseUserListResource(Resource):
 @api.param('id', 'The course id')
 class CourseUserCourseResource(Resource):
     @api.doc('get_by_course_id')
-    @api.marshal_with(course_user_response_model)
+    @api.marshal_list_with(course_user_response_model)
     def get(self, id):
         '''Fetch course user records given course id'''
         return CourseUserService.get_by_course_id(id)
 
-# @api.route('/school/<school_id>')
-# @api.param('id', 'The user id')
-# class CourseUserUserResource(Resource):
-#     @api.doc('get_by_user_id')
-#     @api.marshal_with(course_user_response_model)
-#     def get(self, school_id):
-#         '''Fetch course user records given user id'''
-#         user_id = ''
-#         return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
+@api.route('/school/<school_id>/user/id')
+@api.param('school_id', 'The school id')
+@api.param('id', 'The user id')
+class CourseUserUserResource(Resource):
+    @api.doc('get_by_user_id')
+    @api.marshal_list_with(course_user_response_model)
+    def get(self, school_id, id):
+        '''Fetch course user records given user id'''
+        return CourseUserService.get_by_user_id_and_schoold_id(id, school_id)
 

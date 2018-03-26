@@ -66,6 +66,10 @@ class CourseService(object):
             return course
         api.abort(404)
 
+    @classmethod
+    def get_by_course_id(cls, id):
+        return Course.query.filter_by(id=id).first()
+
 course_request_model = api.model('Course_Request', {
     'name': fields.String(request=False, description="The course name"),
     'description': fields.String(request=False, description="The course description"),

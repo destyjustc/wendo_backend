@@ -1,3 +1,18 @@
+from database import db
+from flask import jsonify, request
+from flask_jwt import jwt_required
+from views.users import User, user_response_model, UserService
+from views.user_roles import UserRole
+from views.roles import Role
+from views.schools import School
+from flask_restplus import Namespace, Resource, fields
+import uuid
+from views.model_super import ModelSuper
+from views.model_common import model_super_model
+
+api = Namespace('teacher', description="Teachers related operations")
+
+
 # from database import db
 # from flask import jsonify, request
 # from flask_jwt import jwt_required
