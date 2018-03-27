@@ -50,6 +50,7 @@ class StudentService(object):
         students = User.query.join(UserRole, User.id==UserRole.user_id)\
             .join(Role, UserRole.role_id==Role.id)\
             .filter(UserRole.school_id==school_id)\
+            .filter(Role.name=='student')\
             .all()
         return students
 

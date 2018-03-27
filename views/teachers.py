@@ -12,115 +12,104 @@ from views.model_common import model_super_model
 
 api = Namespace('teacher', description="Teachers related operations")
 
+class Teacher(ModelSuper):
+    def __init__(self, dict):
+        ModelSuper.__init__(self, dict)
 
-# from database import db
-# from flask import jsonify, request
-# from flask_jwt import jwt_required
-# from views.users import User, UserService, user_response_model
-# from flask_restplus import Namespace, Resource, fields
-# import uuid
-#
-# api = Namespace('teachers', description="Teachers related operations")
-#
-# class Teacher(db.Model):
-#     __tablename__ = 'teachers'
-#
-#     id = db.Column(db.String(36), primary_key=True)
-#     user_id = db.Column(db.String(36), db.ForeignKey(User.id))
-#     user = db.relationship(User, foreign_keys=user_id, post_update=True, uselist=False)
-#
-#     def __init__(self, dict):
-#         for key in dict:
-#             setattr(self, key, dict[key])
-#
-#     def __repr__(self):
-#         return '<id {}>'.format(self.id)
-#
-#     def as_dict(self):
-#         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-#
-#     def update(self, dict):
-#         for i in dict:
-#             setattr(self, i, dict[i])
-#
-# class TeacherService(object):
-#     @classmethod
-#     def get(cls, id):
-#         teacher = Teacher.query.filter_by(id=id).first()
-#         if teacher is not None:
-#             return teacher
-#         api.abort(404)
-#
-#     @classmethod
-#     def create(cls, data):
-#         #TODO: check email or phone number exists
-#         tmp_user = User.query.filter(User.username == data['username']).first()
-#         if tmp_user:
-#             api.abort(409, "Username already exists.")
-#         id = uuid.uuid4()
-#         data['id'] = str(id)
-#         user = User(data)
-#         db.session.add(user)
-#         db.session.commit()
-#         id = uuid.uuid4()
-#         teacher = Teacher({"user_id": user.id, "id": str(id)})
-#         db.session.add(teacher)
-#         db.session.commit()
-#         return teacher, 201
-#
-#     @classmethod
-#     def get_list(cls):
-#         teachers = Teacher.query.all()
-#         return teachers
-#
-#     @classmethod
-#     def update(cls, id, data):
-#         data.pop('username', None)
-#         data.pop('user_id', None)
-#         data.pop('id', None)
-#         teacher = Teacher.query.filter_by(id=id).first()
-#         if not teacher:
-#             api.abort(404, 'Teacher does not exist')
-#         UserService.update(teacher.user_id, data)
-#         teacher.update(data)
-#         db.session.commit()
-#         return teacher
-#
-# teacher_response_model = api.model('Teacher_Response', {
-#     'id': fields.String(description="The teacher identifier"),
-#     'user_id': fields.String(description="The id of the user associated"),
-#     'user': fields.Nested(user_response_model)
-# })
-#
-# teacher_request_model = api.model('Teacher_Request', {
-#     'username': fields.String(required=True, description="The username"),
-#     'password': fields.String(required=True, description="The password"),
-#     'firstname': fields.String(description="The first name"),
-#     'lastname': fields.String(description="The last name"),
-#     'email': fields.String(description="The email"),
-#     'phone': fields.String(description="The phone number"),
-# })
-#
-# @api.route('/')
-# class TeacherListResorce(Resource):
-#     @api.doc('list_teachers')
-#     @api.marshal_list_with(teacher_api_model)
-#     def get(self):
-#         '''List all Teachers'''
-#         return TeacherService.get_list()
-#
-#     @api.doc('create_new_teacher')
-#     @api.marshal_with(teacher_api_model)
-#     def post(self):
-#         '''Create a teacher'''
-#         args = request.get_json()
-#         return TeacherService.create(args)
-#
-# @api.route('/<id>')
-# @api.param('id', 'The teacher id')
-# class TeacherResource(Resource):
-#     @api.doc('get_teacher')
-#     @api.marshal_with(teacher_api_model)
-#     def get(self, id):
-#         '''Fetch a teacher given its identifier'''
-#         return TeacherService.get(id)
+class TeacherService(object):
+    @classmethod
+    def get(cls, school_id, id):
+        teacher = User.query.join(UserRole, User.id == UserRole.user_id) \
+            .join(Role, UserRole.role_id == Role.id) \
+            .filter(User.id == id) \
+            .filter(Role.name == 'staff') \
+            .filter(UserRole.school_id == school_id) \
+            .first()
+        if teacher:
+            return teacher
+        api.abort(404)
+
+    @classmethod
+    def create(cls, data, school_id):
+        user = UserService.create(data)
+        role_id = Role.query.filter_by(name='staff').first().id
+        id = uuid.uuid4()
+        obj = {
+            'id': id,
+            'user_id': user.id,
+            'role_id': role_id,
+            'school_id': school_id
+        }
+        user_role = UserRole(obj)
+        db.session.add(user_role)
+        db.session.commit()
+        return user, 201
+
+    @classmethod
+    def get_list(cls, school_id):
+        teachers = User.query.join(UserRole, User.id == UserRole.user_id) \
+            .join(Role, UserRole.role_id == Role.id) \
+            .filter(UserRole.school_id == school_id) \
+            .filter(Role.name == 'staff') \
+            .all()
+        return teachers
+
+    @classmethod
+    def update(cls, school_id, id, data):
+        data.pop('username', None)
+        data.pop('user_id', None)
+        data.pop('id', None)
+        teacher = User.query.join(UserRole, User.id == UserRole.user_id) \
+            .filter(UserRole.school_id == school_id) \
+            .filter(User.id == id) \
+            .first()
+        if not teacher:
+            api.abort(404, 'Teacher does not exist')
+        UserService.update(teacher.id, data)
+        return teacher
+
+teacher_request_model = api.model('Teacher_Request', {
+    'username': fields.String(required=True, description="The username"),
+    'password': fields.String(required=True, description="The password"),
+    'firstname': fields.String(description="The first name"),
+    'lastname': fields.String(description="The last name"),
+    'email': fields.String(description="The email"),
+    'phone': fields.String(description="The phone number"),
+})
+
+teacher_api_model = api.inherit('Teacher_Response', teacher_request_model, model_super_model, {})
+
+@api.route('/school/<school_id>')
+@api.param('school_id', 'The school id')
+class TeacherListResource(Resource):
+    @api.doc('list_teachers')
+    @api.marshal_list_with(teacher_api_model)
+    def get(self, school_id):
+        '''List all teachers'''
+        return TeacherService.get_list(school_id)
+
+    @api.doc('create_new_teacher')
+    @api.expect(teacher_request_model)
+    @api.marshal_with(teacher_api_model)
+    def post(self, school_id):
+        '''Create a teacher'''
+        args = request.get_json()
+        return TeacherService.create(args, school_id)
+
+@api.route('/school/<school_id>/<id>')
+@api.param('school_id', 'The school id')
+@api.param('id', 'The teacher id')
+class TeacherResource(Resource):
+    @api.doc('get_teacher')
+    @api.marshal_with(teacher_api_model)
+    def get(self, school_id, id):
+        '''Fetch a teacher given its identifier'''
+        return TeacherService.get(school_id, id)
+
+    @api.doc('update_teacher')
+    @api.marshal_with(teacher_api_model)
+    @api.expect(teacher_request_model)
+    def put(self, school_id, id):
+        '''Update a teacher given its identifier and data'''
+        args = request.get_json()
+        return TeacherService.update(school_id, id, args)
