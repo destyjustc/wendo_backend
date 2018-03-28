@@ -54,6 +54,7 @@ class CourseUserService(object):
 
     @classmethod
     def create(cls, data):
+        #TODO create a user_role record for new student
         id = uuid.uuid4()
         data['id'] = str(id)
         course_user = CourseUser(data)
