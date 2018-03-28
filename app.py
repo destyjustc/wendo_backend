@@ -6,7 +6,7 @@ from views.users import User
 from views.roles import Role
 from views.schools import api as school_api
 from views.students import api as student_api
-# from views.teachers import api as teacher_api
+from views.teachers import api as teacher_api
 from views.courses import api as course_api
 from views.users import api as user_api
 from views.user_roles import api as user_role_api
@@ -28,7 +28,7 @@ def init_api():
     api.add_namespace(student_api, path="/student")
     api.add_namespace(school_api, path="/school")
     api.add_namespace(user_api, path="/user")
-    # api.add_namespace(teacher_api, path="/teacher")
+    api.add_namespace(teacher_api, path="/teacher")
     api.add_namespace(course_api, path="/course")
     api.add_namespace(user_role_api, path='/user_role')
     api.add_namespace(course_user_api, path='/course_user')
