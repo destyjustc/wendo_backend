@@ -15,6 +15,7 @@ from views.roles import api as role_api
 from views.payment import api as payment_api
 from views.model_common import api as common_api
 from views.clue_groups import api as clue_group_api
+from views.clues import api as clue_api
 from flask_cors import CORS
 from flask_restplus import Api
 
@@ -36,6 +37,7 @@ def init_api():
     api.add_namespace(role_api, path='/role')
     api.add_namespace(payment_api, path='/payment')
     api.add_namespace(clue_group_api, path='/clue_group')
+    api.add_namespace(clue_api, path='/clue')
     return api
 
 def create_app():
