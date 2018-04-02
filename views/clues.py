@@ -57,6 +57,24 @@ class ClueService(object):
             clue['student'] = UserService.get(clue['student_id'])
         return clues
 
+    @classmethod
+    def update(cls, data):
+        clue = Clue.query.filter_by(id=data['id']).firse()
+        if not clue:
+            api.abort(404, 'Clue does not exist.')
+        clue.update(data)
+        db.session.commit()
+        return clue
+
+    @classmethod
+    def delete(cls, id):
+        clue = Clue.query.filter_by(id=id).firse()
+        if clue:
+            db.session.delete(clue)
+            db.session.commit()
+            return clue
+        api.abort(404)
+
     pass
 
 clue_request_model = api.model('Clue_Request', {
@@ -82,6 +100,15 @@ class ClueListResource(Resource):
         args = request.get_json()
         return ClueService.create(args)
 
+    @api.doc('update clue')
+    @api.expect(clue_request_model)
+    @api.marshal_with(clue_response_model)
+    def put(self):
+        '''Update a clue'''
+        args = request.get_json()
+        return ClueService.update(args)
+
+
 @api.route('/<id>')
 @api.param('id', 'The clue id')
 class ClueResource(Resource):
@@ -90,6 +117,12 @@ class ClueResource(Resource):
     def get(self, id):
         '''Fetch clue given id'''
         return ClueService.get(id)
+
+    @api.doc('delete a clue')
+    @api.marshal_with(clue_response_model)
+    def delete(self, id):
+        '''Remove a clue given its identifier'''
+        return ClueService.delete(id)
 
 @api.route('/clue_group/<clue_group_id>')
 @api.param('clue_group_id', 'The clue group id')

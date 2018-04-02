@@ -62,6 +62,22 @@ class CourseUserService(object):
         db.session.commit()
         return course_user, 201
 
+    @classmethod
+    def get(cls, id):
+        course_user = CourseUser.query.filter_by(id=id).first()
+        if course_user:
+            return course_user
+        api.abort(404)
+
+    @classmethod
+    def delete(cls, id):
+        course_user = CourseUser.query.filter_by(id=id).first()
+        if course_user:
+            db.session.delete(course_user)
+            db.session.commit()
+            return course_user
+        api.abort(404)
+
 
 course_user_request_model = api.model('Course_User_Request', {
     'user_id': fields.String(required=True, description="The id of the user associated"),
@@ -100,6 +116,20 @@ class CourseUserUserResource(Resource):
     @api.marshal_list_with(course_user_response_model)
     def get(self, school_id, user_id):
         '''Fetch course user records given user id'''
-        print(school_id, user_id)
         return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
+
+@api.route('/course_user/<id>')
+@api.param('id', 'The course_user record id')
+class CourseUserResource(Resource):
+    @api.doc('get_by_id')
+    @api.marshal_with(course_user_response_model)
+    def get(self, id):
+        '''Fetch course user record given its id'''
+        return CourseUserService.get(id)
+
+    @api.doc('delete_course_user')
+    @api.marshal_with(course_user_response_model)
+    def delete(self, id):
+        '''Remove a course user record given its id'''
+        return CourseUserService.delete(id)
 

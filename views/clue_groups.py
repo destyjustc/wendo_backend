@@ -61,6 +61,25 @@ class ClueGroupService(object):
             created = UserService.get(clue_group['created_by'])
             clue_group['created'] = created
         return clue_groups
+
+    @classmethod
+    def update(cls, data):
+        clue_group = ClueGroup.query.filter_by(id=data['id']).first()
+        if not clue_group:
+            api.abort(404, 'Clue group does not exist.')
+        clue_group.update(data)
+        db.session.commit()
+        return clue_group
+
+    @classmethod
+    def delete(cls, id):
+        clue_group = ClueGroup.query.filter_by(id=id).first()
+        if clue_group:
+            db.session.delete(clue_group)
+            db.session.commit()
+            return clue_group
+        api.abort(404)
+
     pass
 
 
@@ -84,6 +103,15 @@ class ClueGroupListResource(Resource):
         args = request.get_json()
         return ClueGroupService.create(args)
 
+    @api.doc('update a clue group')
+    @api.expect(clue_gourp_request_model)
+    @api.marshal_with(clue_gourp_response_model)
+    def put(self):
+        '''Update a clue group'''
+        args = request.get_json()
+        return ClueGroupService.update(args)
+
+
 @api.route('/<id>')
 @api.param('id', 'The clue group id')
 class ClueGroupResource(Resource):
@@ -92,6 +120,12 @@ class ClueGroupResource(Resource):
     def get(self, id):
         '''Fetch clue group given id'''
         return ClueGroupService.get_by_id(id)
+
+    @api.doc('delete_by_clue_group_id')
+    @api.marshal_with(clue_gourp_response_model)
+    def delete(self, id):
+        '''Remove clue group given its id'''
+        return ClueGroupService.delete(id)
 
 @api.route('/school/<school_id>')
 @api.param('school_id', 'The school id')
