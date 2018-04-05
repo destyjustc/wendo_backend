@@ -35,8 +35,9 @@ class ClueService(object):
         db.session.add(clue)
         db.session.commit()
         clue = clue.as_dict()
-        clue['clue_group'] = ClueService.get_by_id(data['clue_group_id'])
-        clue['student'] = UserService.get(data['student_id'])
+        clue['clue_group'] = ClueGroupService.get_by_id(data['clue_group_id'])
+        if 'student_id' in data:
+            clue['student'] = UserService.get(data['student_id'])
         return clue, 201
 
     @classmethod
@@ -44,22 +45,24 @@ class ClueService(object):
         clue = Clue.query.filter_by(id=id).first()
         if clue:
             clue = clue.as_dict()
-            clue['clue_group'] = ClueService.get_by_id(clue['clue_group_id'])
-            clue['student'] = UserService.get(clue['student_id'])
+            clue['clue_group'] = ClueGroupService.get_by_id(clue['clue_group_id'])
+            if clue['student_id']:
+                clue['student'] = UserService.get(clue['student_id'])
             return clue
+        api.abort(404)
 
     @classmethod
     def get_by_clue_group_id(cls, clue_group_id):
         clues = Clue.query.filter_by(clue_group_id=clue_group_id).all()
         for clue in clues:
             clue = clue.as_dict()
-            clue['clue_group'] = ClueService.get_by_id(clue['clue_group_id'])
+            clue['clue_group'] = ClueGroupService.get_by_id(clue['clue_group_id'])
             clue['student'] = UserService.get(clue['student_id'])
         return clues
 
     @classmethod
     def update(cls, data):
-        clue = Clue.query.filter_by(id=data['id']).firse()
+        clue = Clue.query.filter_by(id=data['id']).first()
         if not clue:
             api.abort(404, 'Clue does not exist.')
         clue.update(data)
@@ -68,11 +71,11 @@ class ClueService(object):
 
     @classmethod
     def delete(cls, id):
-        clue = Clue.query.filter_by(id=id).firse()
+        clue = Clue.query.filter_by(id=id).first()
         if clue:
             db.session.delete(clue)
             db.session.commit()
-            return clue
+            return clue.id
         api.abort(404)
 
     pass
@@ -119,7 +122,6 @@ class ClueResource(Resource):
         return ClueService.get(id)
 
     @api.doc('delete a clue')
-    @api.marshal_with(clue_response_model)
     def delete(self, id):
         '''Remove a clue given its identifier'''
         return ClueService.delete(id)

@@ -75,7 +75,7 @@ class CourseUserService(object):
         if course_user:
             db.session.delete(course_user)
             db.session.commit()
-            return course_user
+            return course_user.id
         api.abort(404)
 
 
@@ -128,7 +128,6 @@ class CourseUserResource(Resource):
         return CourseUserService.get(id)
 
     @api.doc('delete_course_user')
-    @api.marshal_with(course_user_response_model)
     def delete(self, id):
         '''Remove a course user record given its id'''
         return CourseUserService.delete(id)

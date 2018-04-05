@@ -77,7 +77,7 @@ class ClueGroupService(object):
         if clue_group:
             db.session.delete(clue_group)
             db.session.commit()
-            return clue_group
+            return clue_group.id
         api.abort(404)
 
     pass
@@ -122,7 +122,6 @@ class ClueGroupResource(Resource):
         return ClueGroupService.get_by_id(id)
 
     @api.doc('delete_by_clue_group_id')
-    @api.marshal_with(clue_gourp_response_model)
     def delete(self, id):
         '''Remove clue group given its id'''
         return ClueGroupService.delete(id)
