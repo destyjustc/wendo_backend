@@ -85,15 +85,6 @@ user_request_model = api.model('User_request', {
 
 user_response_model = api.inherit('User_response', user_request_model, model_super_model, {})
 
-# @api.route('/signin')
-# class UserSigninResource(Resource):
-#     @api.doc('user_sign_in')
-#     @api.marshal_with(user_signin_api_model)
-#     def post(self):
-#         '''User Sign in'''
-#         args = request.get_json()
-#         return UserService.signin(args)
-
 @api.route('/')
 class UserListResource(Resource):
     @api.doc('list_users')

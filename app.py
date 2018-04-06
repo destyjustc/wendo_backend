@@ -1,7 +1,7 @@
 from database import db
-from flask import Flask
+from flask import Flask, jsonify
 import os
-from flask_jwt import JWT, current_identity
+from flask_jwt import JWT, current_identity, JWTError
 from views.users import User
 from views.roles import Role
 from views.schools import api as school_api
@@ -16,6 +16,7 @@ from views.payment import api as payment_api
 from views.model_common import api as common_api
 from views.clue_groups import api as clue_group_api
 from views.clues import api as clue_api
+from views.whoami import api as whoami_api
 from flask_cors import CORS
 from flask_restplus import Api
 
@@ -38,6 +39,7 @@ def init_api():
     api.add_namespace(payment_api, path='/payment')
     api.add_namespace(clue_group_api, path='/clue_group')
     api.add_namespace(clue_api, path='/clue')
+    api.add_namespace(whoami_api, path='/whoami')
     return api
 
 def create_app():
@@ -67,6 +69,16 @@ def identity(payload):
     return {"user_id": user_id}
 
 jwt = JWT(app, verify, identity)
+
+def handle_user_exception_again(e):
+    if isinstance(e, JWTError):
+        return jsonify({
+            'message': e.description,
+            'code': e.status_code
+        }), e.status_code
+    return e
+
+app.handle_user_exception = handle_user_exception_again
 
 if __name__ == '__main__':
     app.run()
