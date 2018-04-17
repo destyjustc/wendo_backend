@@ -6,6 +6,7 @@ from flask_restplus import Namespace, Resource, fields
 import uuid
 from views.model_common import ModelCommon, model_super_model
 from views.model_super import ModelSuper
+from flask_jwt import jwt_required
 
 api = Namespace('payment', description="Payment related operations")
 
@@ -50,6 +51,7 @@ class PaymentListResource(Resource):
     @api.doc('create_payment')
     @api.expect(payment_request_model)
     @api.marshal_with(payment_response_model)
+    @jwt_required()
     def post(self):
         '''Create a new payment record'''
         args = request.get_json()
@@ -61,6 +63,7 @@ class PaymentListResource(Resource):
 class PaymentResource(Resource):
     @api.doc('get_by_user_id_and_course_id')
     @api.marshal_with(payment_response_model)
+    @jwt_required()
     def get(self, user_id, course_id):
         '''Fetch payment records by user_id and course_id'''
         return PaymentService.get_by_user_id_and_course_id(user_id, course_id)

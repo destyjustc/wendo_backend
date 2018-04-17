@@ -98,6 +98,7 @@ class ClueListResource(Resource):
     @api.doc('create_clue')
     @api.expect(clue_request_model)
     @api.marshal_with(clue_response_model)
+    @jwt_required()
     def post(self):
         '''Create a new clue'''
         args = request.get_json()
@@ -106,6 +107,7 @@ class ClueListResource(Resource):
     @api.doc('update clue')
     @api.expect(clue_request_model)
     @api.marshal_with(clue_response_model)
+    @jwt_required()
     def put(self):
         '''Update a clue'''
         args = request.get_json()
@@ -117,11 +119,13 @@ class ClueListResource(Resource):
 class ClueResource(Resource):
     @api.doc('get_by_clue_id')
     @api.marshal_with(clue_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch clue given id'''
         return ClueService.get(id)
 
     @api.doc('delete a clue')
+    @jwt_required()
     def delete(self, id):
         '''Remove a clue given its identifier'''
         return ClueService.delete(id)
@@ -131,6 +135,7 @@ class ClueResource(Resource):
 class ClueClueGroupResource(Resource):
     @api.doc('get_by_clue_group_id')
     @api.marshal_list_with(clue_response_model)
+    @jwt_required()
     def get(self, clue_group_id):
         '''Fetch clues given clue group id'''
         return ClueService.get_by_clue_group_id(clue_group_id)

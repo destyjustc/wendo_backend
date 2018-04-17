@@ -89,6 +89,7 @@ user_response_model = api.inherit('User_response', user_request_model, model_sup
 class UserListResource(Resource):
     @api.doc('list_users')
     @api.marshal_list_with(user_response_model)
+    @jwt_required()
     def get(self):
         '''List all users'''
         return UserService.get_list()
@@ -96,6 +97,7 @@ class UserListResource(Resource):
     @api.doc('create_new_user')
     @api.marshal_with(user_response_model)
     @api.expect(user_request_model)
+    @jwt_required()
     def post(self):
         '''Create an user'''
         args = request.get_json()
@@ -106,6 +108,7 @@ class UserListResource(Resource):
 class UserResource(Resource):
     @api.doc('get_user')
     @api.marshal_with(user_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch an user given its identifier'''
         return UserService.get(id)
@@ -119,6 +122,7 @@ class UserResource(Resource):
     @api.doc('update_user')
     @api.expect(user_request_model)
     @api.marshal_with(user_response_model)
+    @jwt_required()
     def put(self, id):
         '''Update an user given its identifier'''
         args = request.get_json()

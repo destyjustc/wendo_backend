@@ -98,6 +98,7 @@ class ClueGroupListResource(Resource):
     @api.doc('create_clue_group')
     @api.expect(clue_gourp_request_model)
     @api.marshal_with(clue_gourp_response_model)
+    @jwt_required()
     def post(self):
         '''Create a new clue group'''
         args = request.get_json()
@@ -106,6 +107,7 @@ class ClueGroupListResource(Resource):
     @api.doc('update a clue group')
     @api.expect(clue_gourp_request_model)
     @api.marshal_with(clue_gourp_response_model)
+    @jwt_required()
     def put(self):
         '''Update a clue group'''
         args = request.get_json()
@@ -117,11 +119,13 @@ class ClueGroupListResource(Resource):
 class ClueGroupResource(Resource):
     @api.doc('get_by_clue_group_id')
     @api.marshal_with(clue_gourp_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch clue group given id'''
         return ClueGroupService.get_by_id(id)
 
     @api.doc('delete_by_clue_group_id')
+    @jwt_required()
     def delete(self, id):
         '''Remove clue group given its id'''
         return ClueGroupService.delete(id)
@@ -131,6 +135,7 @@ class ClueGroupResource(Resource):
 class ClueGroupSchoolListResource(Resource):
     @api.doc('get_by_school_id')
     @api.marshal_list_with(clue_gourp_response_model)
+    @jwt_required()
     def get(self, school_id):
         '''Fetch clue groups given school id'''
         return ClueGroupService.get_by_school_id(school_id)

@@ -84,6 +84,7 @@ student_api_model = api.inherit('Student_Response', student_request_model, model
 class StudentListResource(Resource):
     @api.doc('list_students')
     @api.marshal_list_with(student_api_model)
+    @jwt_required()
     def get(self, school_id):
         '''List all students'''
         return StudentService.get_list(school_id)
@@ -91,6 +92,7 @@ class StudentListResource(Resource):
     @api.doc('create_new_student')
     @api.expect(student_request_model)
     @api.marshal_with(student_api_model)
+    @jwt_required()
     def post(self, school_id):
         '''Create a student'''
         args = request.get_json()
@@ -102,6 +104,7 @@ class StudentListResource(Resource):
 class StudentResource(Resource):
     @api.doc('get_student')
     @api.marshal_with(student_api_model)
+    @jwt_required()
     def get(self, school_id, id):
         '''Fetch a student given its identifier'''
         return StudentService.get(school_id, id)
@@ -109,6 +112,7 @@ class StudentResource(Resource):
     @api.doc('update_student')
     @api.marshal_with(student_api_model)
     @api.expect(student_request_model)
+    @jwt_required()
     def put(self, school_id, id):
         '''Update a student given its identifier and data'''
         args = request.get_json()

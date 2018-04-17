@@ -8,6 +8,7 @@ from flask_restplus import Namespace, Resource, fields
 import uuid
 from views.model_common import ModelCommon, model_super_model
 from views.model_super import ModelSuper
+from flask_jwt import jwt_required
 
 api = Namespace('course_users', description="Course and student relationship operations")
 
@@ -94,6 +95,7 @@ class CourseUserListResource(Resource):
     @api.doc('create_course_users')
     @api.expect(course_user_request_model)
     @api.marshal_with(course_user_response_model)
+    @jwt_required()
     def post(self):
         '''Create a new course user record'''
         args = request.get_json()
@@ -104,6 +106,7 @@ class CourseUserListResource(Resource):
 class CourseUserCourseResource(Resource):
     @api.doc('get_by_course_id')
     @api.marshal_list_with(course_user_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch course user records given course id'''
         return CourseUserService.get_by_course_id(id)
@@ -114,6 +117,7 @@ class CourseUserCourseResource(Resource):
 class CourseUserUserResource(Resource):
     @api.doc('get_by_user_id')
     @api.marshal_list_with(course_user_response_model)
+    @jwt_required()
     def get(self, school_id, user_id):
         '''Fetch course user records given user id'''
         return CourseUserService.get_by_user_id_and_schoold_id(user_id, school_id)
@@ -123,11 +127,13 @@ class CourseUserUserResource(Resource):
 class CourseUserResource(Resource):
     @api.doc('get_by_id')
     @api.marshal_with(course_user_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch course user record given its id'''
         return CourseUserService.get(id)
 
     @api.doc('delete_course_user')
+    @jwt_required()
     def delete(self, id):
         '''Remove a course user record given its id'''
         return CourseUserService.delete(id)

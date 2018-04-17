@@ -7,6 +7,7 @@ from flask_restplus import Namespace, Resource, fields
 import uuid
 from views.model_common import ModelCommon, model_super_model
 from views.model_super import ModelSuper
+from flask_jwt import jwt_required
 
 api = Namespace('user_roles', description="User and role relationship operations")
 
@@ -60,6 +61,7 @@ class UserRoleListResource(Resource):
     @api.doc('create_new_user_role')
     @api.expect(user_role_request_model)
     @api.marshal_with(user_role_response_model)
+    @jwt_required()
     def post(self):
         '''Create a new user role record'''
         args = request.get_json()
@@ -70,6 +72,7 @@ class UserRoleListResource(Resource):
 class UserRoleResource(Resource):
     @api.doc('get_user_role')
     @api.marshal_with(user_role_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch a user role record given user id'''
         return UserRoleService.get_user(id)

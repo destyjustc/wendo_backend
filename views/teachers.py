@@ -84,6 +84,7 @@ teacher_api_model = api.inherit('Teacher_Response', teacher_request_model, model
 class TeacherListResource(Resource):
     @api.doc('list_teachers')
     @api.marshal_list_with(teacher_api_model)
+    @jwt_required()
     def get(self, school_id):
         '''List all teachers'''
         return TeacherService.get_list(school_id)
@@ -91,6 +92,7 @@ class TeacherListResource(Resource):
     @api.doc('create_new_teacher')
     @api.expect(teacher_request_model)
     @api.marshal_with(teacher_api_model)
+    @jwt_required()
     def post(self, school_id):
         '''Create a teacher'''
         args = request.get_json()
@@ -102,6 +104,7 @@ class TeacherListResource(Resource):
 class TeacherResource(Resource):
     @api.doc('get_teacher')
     @api.marshal_with(teacher_api_model)
+    @jwt_required()
     def get(self, school_id, id):
         '''Fetch a teacher given its identifier'''
         return TeacherService.get(school_id, id)
@@ -109,6 +112,7 @@ class TeacherResource(Resource):
     @api.doc('update_teacher')
     @api.marshal_with(teacher_api_model)
     @api.expect(teacher_request_model)
+    @jwt_required()
     def put(self, school_id, id):
         '''Update a teacher given its identifier and data'''
         args = request.get_json()

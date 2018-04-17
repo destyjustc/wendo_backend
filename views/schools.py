@@ -64,6 +64,7 @@ school_response_model = api.inherit('School_Response', school_request_model, mod
 class SchoolListResource(Resource):
     @api.doc('list_schools')
     @api.marshal_list_with(school_response_model)
+    @jwt_required()
     def get(self):
         '''List all schools'''
         return SchoolService.get_list()
@@ -71,6 +72,7 @@ class SchoolListResource(Resource):
     @api.doc('create_new_school')
     @api.expect(school_request_model)
     @api.marshal_with(school_response_model)
+    @jwt_required()
     def post(self):
         '''Create a school'''
         args = request.get_json()
@@ -81,6 +83,7 @@ class SchoolListResource(Resource):
 class StudentResource(Resource):
     @api.doc('get_school')
     @api.marshal_with(school_response_model)
+    @jwt_required()
     def get(self, id):
         '''Fetch a school given its identifier'''
         return SchoolService.get(id)
@@ -88,6 +91,7 @@ class StudentResource(Resource):
     @api.doc('update_school')
     @api.expect(school_request_model)
     @api.marshal_with(school_response_model)
+    @jwt_required()
     def put(self, id):
         '''Fetch a school given its identifier'''
         args = request.get_json()

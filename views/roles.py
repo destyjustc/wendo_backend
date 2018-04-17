@@ -1,6 +1,7 @@
 from database import db
 from flask_restplus import Namespace, Resource, fields
 from views.model_super import ModelSuper
+from flask_jwt import jwt_required
 
 api = Namespace('role', description="Role related operations")
 
@@ -30,6 +31,7 @@ role_response_model = api.model('Role_Response_Model', {
 class RoleListResource(Resource):
     @api.doc('list_roles')
     @api.marshal_with(role_response_model)
+    @jwt_required()
     def get(self):
         '''List all roles'''
         return RoleService.get_list()

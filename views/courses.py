@@ -84,6 +84,7 @@ course_response_model = api.inherit('Course_Response', course_request_model, mod
 class CourseListResource(Resource):
     @api.doc('list_courses')
     @api.marshal_list_with(course_response_model)
+    @jwt_required()
     def get(self, school_id):
         '''List all courses'''
         return CourseService.get_list(school_id)
@@ -91,6 +92,7 @@ class CourseListResource(Resource):
     api.doc('create_new_course')
     @api.expect(course_request_model)
     @api.marshal_with(course_response_model)
+    @jwt_required()
     def post(self, school_id):
         '''Create a course'''
         args = request.get_json()
@@ -101,6 +103,7 @@ class CourseListResource(Resource):
 class CourseResource(Resource):
     @api.doc('get_course')
     @api.marshal_with(course_response_model)
+    @jwt_required()
     def get(self, school_id, id):
         '''Fetch a course given its identifier'''
         return CourseService.get(school_id, id)
@@ -108,6 +111,7 @@ class CourseResource(Resource):
     @api.doc('update_course')
     @api.expect(course_request_model)
     @api.marshal_with(course_response_model)
+    @jwt_required()
     def put(self, school_id, id):
         '''Update a course given its identifier'''
         args = request.get_json()
@@ -115,6 +119,7 @@ class CourseResource(Resource):
 
     @api.doc('delete_course')
     @api.marshal_with(course_response_model)
+    @jwt_required()
     def delete(self, school_id, id):
         '''Remove a course given its identifier'''
         return CourseService.delete(school_id, id)
