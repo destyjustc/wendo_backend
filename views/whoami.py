@@ -7,6 +7,7 @@ from views.model_common import ModelCommon, model_super_model
 from views.model_super import ModelSuper
 from views.users import User, user_response_model
 from views.user_roles import UserRoleService
+from views.roles import RoleService, role_response_model
 
 api = Namespace('whoami', description="who am i api")
 
@@ -15,12 +16,16 @@ class WhoAmIService(object):
     def whoami(cls, id):
         user = User.query.filter_by(id=id).first()
         user = user.as_dict()
-        school_id = UserRoleService.get_user(id).school_id
+        user_role = UserRoleService.get_user(id)
+        school_id = user_role.school_id
+        role = RoleService.get(user_role.role_id)
         user['school_id'] = school_id
+        user['role'] = role
         return user
 
 whoami_response_model = api.inherit('User_Whoami', user_response_model, {
-    'school_id': fields.String(description="The school id")
+    'school_id': fields.String(description="The school id"),
+    'role': fields.Nested(role_response_model),
 })
 
 @api.route('/')

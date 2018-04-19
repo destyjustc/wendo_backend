@@ -14,6 +14,7 @@ api = Namespace('clue_groups', description="Clue Groups related operations")
 class ClueGroup(ModelCommon, ModelSuper):
     __tablename__ = 'clue_groups'
 
+    name = db.Column(db.String(36))
     created_by = db.Column(db.String(36), db.ForeignKey(User.id))
     assigned_to = db.Column(db.String(36), db.ForeignKey(User.id))
     created = db.relationship(User, foreign_keys=created_by, post_update=True, uselist=False)
@@ -84,6 +85,7 @@ class ClueGroupService(object):
 
 
 clue_gourp_request_model = api.model('Clue_Group_Request', {
+    'name': fields.String(required=True, description="The name of the clue group"),
     'created_by': fields.String(required=True, description="The id of the user created this clue group"),
     'assigned_to': fields.String(required=True, description="The id of the user this clue group was assigned to"),
 })

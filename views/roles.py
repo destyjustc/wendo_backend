@@ -21,6 +21,13 @@ class RoleService(object):
         roles = Role.query.all()
         return roles;
 
+    @classmethod
+    def get(cls, id):
+        role = Role.query.filter_by(id=id).first()
+        if role is not None:
+            return role
+        api.abort(404)
+
 role_response_model = api.model('Role_Response_Model', {
     'id': fields.String(description="The id of the role."),
     'name': fields.String(description="The name of the role."),
